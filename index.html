@@ -945,5 +945,48 @@
             return '<div style="padding: 1rem;"><div class="loading"></div><p>جاري إنشاء QR Code...</p></div>';
         }
     </script>
+    <script>
+// كود للتأكد من عمل الروابط على Wasmer
+document.addEventListener('DOMContentLoaded', function() {
+    // تأكد من أن جميع الروابط تعمل
+    const links = document.querySelectorAll('a[href]');
+    links.forEach(link => {
+        const href = link.getAttribute('href');
+        if (href && !href.startsWith('http') && !href.startsWith('#') && href !== 'index.html') {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = href;
+            });
+        }
+    });
+});
+
+// دالة لإنشاء المتجر على Wasmer
+async function createStoreOnWasmer(formData) {
+    try {
+        // استخدم localStorage كبديل مؤقت
+        const storeId = 'ST' + Date.now();
+        const storeUrl = `${window.location.origin}/store.html?store_id=${storeId}`;
+        
+        // حفظ في localStorage
+        const stores = JSON.parse(localStorage.getItem('shopready_stores') || '[]');
+        stores.push({
+            id: storeId,
+            name: formData.storeName,
+            owner: formData.ownerName,
+            phone: formData.phone,
+            plan: formData.planType,
+            createdAt: new Date().toISOString()
+        });
+        localStorage.setItem('shopready_stores', JSON.stringify(stores));
+        
+        return storeUrl;
+    } catch (error) {
+        console.error('Error creating store:', error);
+        throw error;
+    }
+}
+</script>
 </body>
+
 </html>
