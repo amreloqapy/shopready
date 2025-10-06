@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم ShopReady - الإشراف</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2c5aa0;
+            --secondary-color: #ff6b35;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --dark-color: #343a40;
+            --light-color: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        /* شاشة تسجيل الدخول */
+        .login-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #2c5aa0, #1e3a8a);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .login-box {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-box h2 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .login-box p {
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: right;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1e3a8a;
+            transform: translateY(-2px);
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        .error-message {
+            color: var(--danger-color);
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        /* محتوى لوحة التحكم */
+        .admin-container {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .admin-container.active {
+            display: flex;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: var(--dark-color);
+            color: white;
+            padding: 1rem 0;
+        }
+
+        .sidebar-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #495057;
+            margin-bottom: 1rem;
+        }
+
+        .sidebar-header h2 {
+            color: var(--secondary-color);
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            color: #ddd;
+            text-decoration: none;
+            transition: all 0.3s;
+            border-radius: 5px;
+            margin: 0 0.5rem;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .nav-links i {
+            margin-left: 0.5rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 1rem;
+            background: #f8f9fa;
+            overflow-y: auto;
+        }
+
+        .header {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            border-top: 4px solid var(--primary-color);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card.success {
+            border-top-color: var(--success-color);
+        }
+
+        .stat-card.warning {
+            border-top-color: var(--warning-color);
+        }
+
+        .stat-card.danger {
+            border-top-color: var(--danger-color);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .content-section {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 1.5rem;
+            background: var(--light-color);
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-header h3 {
+            color: var(--dark-color);
+            margin: 0;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: right;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: var(--light-color);
+            font-weight: 600;
+            color: var(--dark-color);
+            position: sticky;
+            top: 0;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: var(--success-color);
+        }
+
+        .status-inactive {
+            background: #f8d7da;
+            color: var(--danger-color);
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: var(--warning-color);
+        }
+
+        .status-trial {
+            background: #e7f3ff;
+            color: var(--primary-color);
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-warning {
+            background: var(--warning-color);
+            color: #333;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-info:hover {
+            background: #138496;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filters {
+            background: var(--light-color);
+            padding: 1.5rem;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #ddd;
+        }
+
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: var(--success-color);
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: var(--danger-color);
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            color: var(--warning-color);
+            border: 1px solid #ffeaa7;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .admin-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filters {
+                flex-direction: column;
+            }
+
+            .search-box {
+                min-width: auto;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .header-actions {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- شاشة تسجيل الدخول -->
+    <div class="login-container" id="loginContainer">
+        <div class="login-box">
+            <h2><i class="fas fa-store"></i> ShopReady Admin</h2>
+            <p>لوحة تحكم المشرفين</p>
+            
+            <div class="form-group">
+                <label for="username"><i class="fas fa-user"></i> اسم المستخدم</label>
+                <input type="text" id="username" class="form-control" placeholder="أدخل اسم المستخدم" value="01019013047">
+            </div>
+            
+            <div class="form-group">
+                <label for="password"><i class="fas fa-lock"></i> كلمة المرور</label>
+                <input type="password" id="password" class="form-control" placeholder="أدخل كلمة المرور" value="P@2020ssw0rd">
+            </div>
+            
+            <button class="btn btn-primary btn-block" onclick="login()">
+                <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+            </button>
+            
+            <div class="error-message" id="errorMessage">
+                <i class="fas fa-exclamation-circle"></i> اسم المستخدم أو كلمة المرور غير صحيحة
+            </div>
+        </div>
+    </div>
+
+    <!-- محتوى لوحة التحكم -->
+    <div class="admin-container" id="adminContainer">
+        <!-- الشريط الجانبي -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-store"></i> ShopReady Admin</h2>
+                <small style="color: #ccc;" id="adminWelcome">مرحباً، المشرف</small>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#" class="active" onclick="showTab('dashboard')"><i class="fas fa-chart-bar"></i> لوحة التحكم</a></li>
+                <li><a href="#" onclick="showTab('stores')"><i class="fas fa-store"></i> إدارة المتاجر</a></li>
+                <li><a href="#" onclick="showTab('subscriptions')"><i class="fas fa-credit-card"></i> الاشتراكات</a></li>
+                <li><a href="#" onclick="showTab('orders')"><i class="fas fa-shopping-cart"></i> الطلبات</a></li>
+                <li><a href="#" onclick="showTab('customers')"><i class="fas fa-users"></i> عملاء جدد</a></li>
+                <li><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a></li>
+            </ul>
+        </nav>
+
+        <!-- المحتوى الرئيسي -->
+        <main class="main-content">
+            <div class="header">
+                <h1 id="mainTitle">لوحة تحكم ShopReady</h1>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="refreshData()">
+                        <i class="fas fa-sync-alt"></i> تحديث البيانات
+                    </button>
+                    <button class="btn btn-success" onclick="exportData()">
+                        <i class="fas fa-download"></i> تصدير البيانات
+                    </button>
+                </div>
+            </div>
+
+            <!-- تبويب لوحة التحكم -->
+            <div id="dashboard-tab" class="tab-content active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-number" id="total-stores">0</span>
+                        <span class="stat-label">إجمالي المتاجر</span>
+                    </div>
+                    <div class="stat-card success">
+                        <span class="stat-number" id="active-stores">0</span>
+                        <span class="stat-label">متاجر نشطة</span>
+                    </div>
+                    <div class="stat-card warning">
+                        <span class="stat-number" id="trial-stores">0</span>
+                        <span class="stat-label">فترة تجريبية</span>
+                    </div>
+                    <div class="stat-card danger">
+                        <span class="stat-number" id="expired-stores">0</span>
+                        <span class="stat-label">اشتراكات منتهية</span>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-chart-line"></i> الإحصائيات الحية</h3>
+                        <span id="lastUpdate"></span>
+                    </div>
+                    <div class="table-container">
+                        <div class="loading" id="dashboardLoading">
+                            <div class="loading-spinner"></div>
+                            <p>جاري تحميل البيانات...</p>
+                        </div>
+                        <table style="display: none;" id="statsTable">
+                            <thead>
+                                <tr>
+                                    <th>نوع الإحصائية</th>
+                                    <th>القيمة</th>
+                                    <th>التغيير</th>
+                                </tr>
+                            </thead>
+                            <tbody id="statsBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- تبويب إدارة المتاجر -->
+            <div id="stores-tab" class="tab-content">
+                <div class="filters">
+                    <input type="text" class="form-control search-box" id="storeSearch" placeholder="🔍 بحث في المتاجر..." onkeyup="filterStores()">
+                    <select class="form-control" id="storeFilter" onchange="filterStores()">
+                        <option value="all">جميع الحالات</option>
+                        <option value="active">نشط</option>
+                        <option value="trial">تجريبي</option>
+                        <option value="expired">منتهي</option>
+                    </select>
+                    <button class="btn btn-success" onclick="showAddStoreForm()">
+                        <i class="fas fa-plus"></i> إضافة متجر
+                    </button>
+                </div>
+                <div class="content-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-list"></i> قائمة المتاجر</h3>
+                    </div>
+                    <div class="table-container">
+                        <div class="loading" id="storesLoading">
+                            <div class="loading-spinner"></div>
+                            <p>جاري تحميل بيانات المتاجر...</p>
+                        </div>
+                        <div class="empty-state" id="storesEmpty" style="display: none;">
+                            <i class="fas fa-store-slash"></i>
+                            <h3>لا توجد متاجر</h3>
+                            <p>لم يتم العثور على أي متاجر في النظام</p>
+                        </div>
+                        <table style="display: none;" id="storesTable">
+                            <thead>
+                                <tr>
+                                    <th>اسم المتجر</th>
+                                    <th>صاحب المتجر</th>
+                                    <th>رقم الهاتف</th>
+                                    <th>الباقة</th>
+                                    <th>الحالة</th>
+                                    <th>تاريخ الإنشاء</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="storesTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- تبويب الاشتراكات -->
+            <div id="subscriptions-tab" class="tab-content">
+                <div class="content-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-credit-card"></i> إدارة الاشتراكات</h3>
+                        <button class="btn btn-warning" onclick="checkExpiringSubscriptions()">
+                            <i class="fas fa-clock"></i> فحص الاشتراكات المنتهية
+                        </button>
+                    </div>
+                    <div class="table-container">
+                        <div class="loading" id="subscriptionsLoading">
+                            <div class="loading-spinner"></div>
+                            <p>جاري تحميل بيانات الاشتراكات...</p>
+                        </div>
+                        <div class="empty-state" id="subscriptionsEmpty" style="display: none;">
+                            <i class="fas fa-credit-card"></i>
+                            <h3>لا توجد اشتراكات</h3>
+                            <p>لم يتم العثور على أي اشتراكات في النظام</p>
+                        </div>
+                        <table style="display: none;" id="subscriptionsTable">
+                            <thead>
+                                <tr>
+                                    <th>اسم المتجر</th>
+                                    <th>نوع الباقة</th>
+                                    <th>تاريخ البدء</th>
+                                    <th>تاريخ الانتهاء</th>
+                                    <th>الأيام المتبقية</th>
+                                    <th>الحالة</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="subscriptionsTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- تبويب الطلبات -->
+            <div id="orders-tab" class="tab-content">
+                <div class="content-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-shopping-cart"></i> الطلبات الأخيرة</h3>
+                        <div>
+                            <select class="form-control" id="orderStatusFilter" onchange="loadOrders()" style="display: inline-block; width: auto;">
+                                <option value="all">جميع الطلبات</option>
+                                <option value="pending">معلقة</option>
+                                <option value="completed">مكتملة</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <div class="loading" id="ordersLoading">
+                            <div class="loading-spinner"></div>
+                            <p>جاري تحميل الطلبات...</p>
+                        </div>
+                        <div class="empty-state" id="ordersEmpty" style="display: none;">
+                            <i class="fas fa-shopping-cart"></i>
+                            <h3>لا توجد طلبات</h3>
+                            <p>لم يتم العثور على أي طلبات في النظام</p>
+                        </div>
+                        <table style="display: none;" id="ordersTable">
+                            <thead>
+                                <tr>
+                                    <th>رقم الطلب</th>
+                                    <th>اسم المتجر</th>
+                                    <th>اسم العميل</th>
+                                    <th>رقم الهاتف</th>
+                                    <th>المبلغ</th>
+                                    <th>التاريخ</th>
+                                    <th>الحالة</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ordersTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- تبويب العملاء الجدد -->
+            <div id="customers-tab" class="tab-content">
+                <div class="content-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-users"></i> طلبات عملاء جدد</h3>
+                        <button class="btn btn-success" onclick="processAllPending()">
+                            <i class="fas fa-check-double"></i> معالجة الكل
+                        </button>
+                    </div>
+                    <div class="table-container">
+                        <div class="loading" id="customersLoading">
+                            <div class="loading-spinner"></div>
+                            <p>جاري تحميل طلبات العملاء...</p>
+                        </div>
+                        <div class="empty-state" id="customersEmpty" style="display: none;">
+                            <i class="fas fa-users"></i>
+                            <h3>لا توجد طلبات عملاء</h3>
+                            <p>لم يتم العثور على أي طلبات عملاء جدد</p>
+                        </div>
+                        <table style="display: none;" id="customersTable">
+                            <thead>
+                                <tr>
+                                    <th>اسم العميل</th>
+                                    <th>رقم الهاتف</th>
+                                    <th>نوع المتجر</th>
+                                    <th>الباقة المطلوبة</th>
+                                    <th>تاريخ الطلب</th>
+                                    <th>الحالة</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customersTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // بيانات النظام
+        let systemData = {
+            stores: [],
+            subscriptions: [],
+            orders: [],
+            customers: []
+        };
+
+        // بيانات الاعتماد
+        const ADMIN_CREDENTIALS = {
+            username: "01019013047",
+            password: "P@2020ssw0rd"
+        };
+
+        // تسجيل الدخول
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+
+            if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('adminContainer').classList.add('active');
+                document.getElementById('adminWelcome').textContent = `مرحباً، ${username}`;
+                loadSystemData();
+            } else {
+                errorMessage.style.display = 'block';
+            }
+        }
+
+        // تسجيل الخروج
+        function logout() {
+            if (confirm('هل تريد تسجيل الخروج؟')) {
+                document.getElementById('adminContainer').classList.remove('active');
+                document.getElementById('loginContainer').style.display = 'flex';
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+                document.getElementById('errorMessage').style.display = 'none';
+            }
+        }
+
+        // تبديل التبويبات
+        function showTab(tabName) {
+            // إخفاء جميع التبويبات
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // تحديث القائمة الجانبية
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // إظهار التبويب المحدد
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // تحميل بيانات التبويب إذا لزم الأمر
+            if (tabName === 'stores') loadStores();
+            else if (tabName === 'subscriptions') loadSubscriptions();
+            else if (tabName === 'orders') loadOrders();
+            else if (tabName === 'customers') loadCustomers();
+        }
+
+        // تحميل بيانات النظام
+        async function loadSystemData() {
+            try {
+                showAlert('جاري تحميل بيانات النظام...', 'info');
+                await Promise.all([
+                    loadStores(),
+                    loadSubscriptions(),
+                    loadOrders(),
+                    loadCustomers()
+                ]);
+                updateDashboard();
+                showAlert('تم تحميل البيانات بنجاح', 'success');
+            } catch (error) {
+                console.error('Error loading system data:', error);
+                showAlert('حدث خطأ في تحميل البيانات', 'error');
+            }
+        }
+
+        // تحميل المتاجر
+        async function loadStores() {
+            showLoading('storesLoading', 'storesTable', 'storesEmpty');
+            try {
+                // استخدام البيانات المحلية إذا لم تكن API متاحة
+                if (window.ShopReadyAPI && window.ShopReadyAPI.getSheetData) {
+                    systemData.stores = await window.ShopReadyAPI.getSheetData('Stores');
+                } else {
+                    systemData.stores = getLocalStores();
+                }
+                updateStoresTable();
+            } catch (error) {
+                console.error('Error loading stores:', error);
+                systemData.stores = getLocalStores();
+                updateStoresTable();
+                showAlert('تم استخدام البيانات المحلية', 'warning');
+            }
+        }
+
+        // تحميل الاشتراكات
+        async function loadSubscriptions() {
+            showLoading('subscriptionsLoading', 'subscriptionsTable', 'subscriptionsEmpty');
+            try {
+                if (window.ShopReadyAPI && window.ShopReadyAPI.getSheetData) {
+                    systemData.subscriptions = await window.ShopReadyAPI.getSheetData('Subscriptions');
+                } else {
+                    systemData.subscriptions = getLocalSubscriptions();
+                }
+                updateSubscriptionsTable();
+            } catch (error) {
+                console.error('Error loading subscriptions:', error);
+                systemData.subscriptions = getLocalSubscriptions();
+                updateSubscriptionsTable();
+            }
+        }
+
+        // تحميل الطلبات
+        async function loadOrders() {
+            showLoading('ordersLoading', 'ordersTable', 'ordersEmpty');
+            try {
+                if (window.ShopReadyAPI && window.ShopReadyAPI.getSheetData) {
+                    systemData.orders = await window.ShopReadyAPI.getSheetData('Orders');
+                } else {
+                    systemData.orders = getLocalOrders();
+                }
+                updateOrdersTable();
+            } catch (error) {
+                console.error('Error loading orders:', error);
+                systemData.orders = getLocalOrders();
+                updateOrdersTable();
+            }
+        }
+
+        // تحميل العملاء الجدد
+        async function loadCustomers() {
+            showLoading('customersLoading', 'customersTable', 'customersEmpty');
+            try {
+                if (window.ShopReadyAPI && window.ShopReadyAPI.getSheetData) {
+                    systemData.customers = await window.ShopReadyAPI.getSheetData('Customers');
+                } else {
+                    systemData.customers = getLocalCustomers();
+                }
+                updateCustomersTable();
+            } catch (error) {
+                console.error('Error loading customers:', error);
+                systemData.customers = getLocalCustomers();
+                updateCustomersTable();
+            }
+        }
+
+        // بيانات محلية للطوارئ
+        function getLocalStores() {
+            const localStores = localStorage.getItem('shopready_stores');
+            if (localStores) {
+                return JSON.parse(localStores);
+            }
+            
+            // بيانات افتراضية
+            return [
+                {
+                    Store_ID: 'ST001',
+                    Store_Name: 'متجر الإلكترونيات',
+                    Owner_Name: 'أحمد محمد',
+                    Phone: '01019013047',
+                    Plan_Type: 'annual',
+                    Status: 'active',
+                    Created_At: '2024-01-15'
+                },
+                {
+                    Store_ID: 'ST002',
+                    Store_Name: 'متجر الملابس',
+                    Owner_Name: 'فاطمة أحمد',
+                    Phone: '01123456789',
+                    Plan_Type: 'trial',
+                    Status: 'trial',
+                    Created_At: '2024-01-20'
+                }
+            ];
+        }
+
+        function getLocalSubscriptions() {
+            return [
+                {
+                    Store_ID: 'ST001',
+                    Plan_Type: 'annual',
+                    Start_Date: '2024-01-15',
+                    End_Date: '2025-01-15',
+                    Status: 'active'
+                },
+                {
+                    Store_ID: 'ST002',
+                    Plan_Type: 'trial',
+                    Start_Date: '2024-01-20',
+                    End_Date: '2024-01-27',
+                    Status: 'trial'
+                }
+            ];
+        }
+
+        function getLocalOrders() {
+            return [
+                {
+                    Order_ID: 'ORD001',
+                    Store_ID: 'ST001',
+                    Customer_Name: 'محمد علي',
+                    Customer_Phone: '01234567890',
+                    Total: 1500,
+                    Date: '2024-01-25',
+                    Status: 'completed'
+                }
+            ];
+        }
+
+        function getLocalCustomers() {
+            return [
+                {
+                    Customer_Name: 'سارة خالد',
+                    Phone: '01112223344',
+                    Business_Type: 'ملابس',
+                    Plan_Type: 'annual',
+                    Request_Date: '2024-01-26',
+                    Status: 'pending'
+                }
+            ];
+        }
+
+        // تحديث لوحة التحكم
+        function updateDashboard() {
+            const totalStores = systemData.stores.length;
+            const activeStores = systemData.stores.filter(store => store.Status === 'active').length;
+            const trialStores = systemData.stores.filter(store => store.Status === 'trial' || store.Plan_Type === 'trial').length;
+            const expiredStores = systemData.stores.filter(store => store.Status === 'expired').length;
+            
+            document.getElementById('total-stores').textContent = totalStores;
+            document.getElementById('active-stores').textContent = activeStores;
+            document.getElementById('trial-stores').textContent = trialStores;
+            document.getElementById('expired-stores').textContent = expiredStores;
+            
+            document.getElementById('lastUpdate').textContent = `آخر تحديث: ${new Date().toLocaleString('ar-EG')}`;
+        }
+
+        // تحديث جدول المتاجر
+        function updateStoresTable() {
+            const tbody = document.getElementById('storesTableBody');
+            const emptyState = document.getElementById('storesEmpty');
+            const table = document.getElementById('storesTable');
+            const loading = document.getElementById('storesLoading');
+            
+            tbody.innerHTML = '';
+            
+            if (systemData.stores.length === 0) {
+                loading.style.display = 'none';
+                table.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            systemData.stores.forEach(store => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${store.Store_Name || 'بدون اسم'}</td>
+                    <td>${store.Owner_Name || 'غير معروف'}</td>
+                    <td>${store.Phone || 'غير معروف'}</td>
+                    <td>${store.Plan_Type === 'annual' ? 'سنوي' : 'تجريبي'}</td>
+                    <td>
+                        <span class="status-badge ${getStatusClass(store.Status)}">
+                            ${getStatusText(store.Status)}
+                        </span>
+                    </td>
+                    <td>${store.Created_At || 'غير محدد'}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-sm btn-info" onclick="viewStore('${store.Store_ID}')">
+                                <i class="fas fa-eye"></i> عرض
+                            </button>
+                            <button class="btn-sm btn-warning" onclick="editStore('${store.Store_ID}')">
+                                <i class="fas fa-edit"></i> تعديل
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            hideLoading('storesLoading', 'storesTable', 'storesEmpty');
+        }
+
+        // تحديث جدول الاشتراكات
+        function updateSubscriptionsTable() {
+            const tbody = document.getElementById('subscriptionsTableBody');
+            const emptyState = document.getElementById('subscriptionsEmpty');
+            const table = document.getElementById('subscriptionsTable');
+            const loading = document.getElementById('subscriptionsLoading');
+            
+            tbody.innerHTML = '';
+            
+            if (systemData.subscriptions.length === 0) {
+                loading.style.display = 'none';
+                table.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            systemData.subscriptions.forEach(sub => {
+                const daysLeft = calculateDaysLeft(sub.End_Date);
+                const status = daysLeft > 0 ? (sub.Plan_Type === 'trial' ? 'trial' : 'active') : 'expired';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${getStoreName(sub.Store_ID)}</td>
+                    <td>${sub.Plan_Type === 'annual' ? 'سنوي' : 'تجريبي'}</td>
+                    <td>${sub.Start_Date || 'غير محدد'}</td>
+                    <td>${sub.End_Date || 'غير محدد'}</td>
+                    <td>${daysLeft > 0 ? daysLeft + ' يوم' : 'منتهي'}</td>
+                    <td>
+                        <span class="status-badge ${getStatusClass(status)}">
+                            ${getStatusText(status)}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-sm btn-success" onclick="renewSubscription('${sub.Store_ID}')">
+                                <i class="fas fa-sync"></i> تجديد
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            hideLoading('subscriptionsLoading', 'subscriptionsTable', 'subscriptionsEmpty');
+        }
+
+        // تحديث جدول الطلبات
+        function updateOrdersTable() {
+            const tbody = document.getElementById('ordersTableBody');
+            const emptyState = document.getElementById('ordersEmpty');
+            const table = document.getElementById('ordersTable');
+            const loading = document.getElementById('ordersLoading');
+            
+            tbody.innerHTML = '';
+            
+            if (systemData.orders.length === 0) {
+                loading.style.display = 'none';
+                table.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            systemData.orders.forEach(order => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${order.Order_ID || 'غير معروف'}</td>
+                    <td>${getStoreName(order.Store_ID)}</td>
+                    <td>${order.Customer_Name || 'غير معروف'}</td>
+                    <td>${order.Customer_Phone || 'غير معروف'}</td>
+                    <td>${order.Total || 0} جنيه</td>
+                    <td>${order.Date || 'غير محدد'}</td>
+                    <td>
+                        <span class="status-badge ${getStatusClass(order.Status)}">
+                            ${getStatusText(order.Status)}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-sm btn-info" onclick="viewOrder('${order.Order_ID}')">
+                                <i class="fas fa-eye"></i> عرض
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            hideLoading('ordersLoading', 'ordersTable', 'ordersEmpty');
+        }
+
+        // تحديث جدول العملاء
+        function updateCustomersTable() {
+            const tbody = document.getElementById('customersTableBody');
+            const emptyState = document.getElementById('customersEmpty');
+            const table = document.getElementById('customersTable');
+            const loading = document.getElementById('customersLoading');
+            
+            tbody.innerHTML = '';
+            
+            if (systemData.customers.length === 0) {
+                loading.style.display = 'none';
+                table.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            systemData.customers.forEach(customer => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${customer.Customer_Name || 'غير معروف'}</td>
+                    <td>${customer.Phone || 'غير معروف'}</td>
+                    <td>${customer.Business_Type || 'عام'}</td>
+                    <td>${customer.Plan_Type === 'annual' ? 'سنوي' : 'تجريبي'}</td>
+                    <td>${customer.Request_Date || 'غير محدد'}</td>
+                    <td>
+                        <span class="status-badge ${getStatusClass(customer.Status)}">
+                            ${getStatusText(customer.Status)}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-sm btn-success" onclick="processCustomer('${customer.Phone}')">
+                                <i class="fas fa-check"></i> معالجة
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            hideLoading('customersLoading', 'customersTable', 'customersEmpty');
+        }
+
+        // دوال مساعدة
+        function getStatusClass(status) {
+            const statusMap = {
+                'active': 'status-active',
+                'trial': 'status-trial',
+                'expired': 'status-inactive',
+                'pending': 'status-pending',
+                'completed': 'status-active'
+            };
+            return statusMap[status] || 'status-pending';
+        }
+
+        function getStatusText(status) {
+            const statusMap = {
+                'active': 'نشط',
+                'trial': 'تجريبي',
+                'expired': 'منتهي',
+                'pending': 'معلق',
+                'completed': 'مكتمل'
+            };
+            return statusMap[status] || 'غير معروف';
+        }
+
+        function getStoreName(storeId) {
+            const store = systemData.stores.find(s => s.Store_ID === storeId);
+            return store ? store.Store_Name : 'غير معروف';
+        }
+
+        function calculateDaysLeft(endDate) {
+            if (!endDate) return 0;
+            try {
+                const end = new Date(endDate);
+                const today = new Date();
+                const diff = end - today;
+                return Math.ceil(diff / (1000 * 60 * 60 * 24));
+            } catch (error) {
+                return 0;
+            }
+        }
+
+        function showLoading(loadingId, tableId, emptyId) {
+            document.getElementById(loadingId).style.display = 'block';
+            document.getElementById(tableId).style.display = 'none';
+            if (emptyId) document.getElementById(emptyId).style.display = 'none';
+        }
+
+        function hideLoading(loadingId, tableId, emptyId) {
+            document.getElementById(loadingId).style.display = 'none';
+            document.getElementById(tableId).style.display = 'table';
+        }
+
+        function showAlert(message, type) {
+            // إزالة أي تنبيهات سابقة
+            const existingAlerts = document.querySelectorAll('.alert');
+            existingAlerts.forEach(alert => alert.remove());
+            
+            // إنشاء تنبيه جديد
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.innerHTML = `
+                <i class="fas fa-${getAlertIcon(type)}"></i>
+                ${message}
+            `;
+            
+            // إضافة التنبيه في بداية المحتوى الرئيسي
+            const mainContent = document.querySelector('.main-content');
+            mainContent.insertBefore(alert, mainContent.firstChild);
+            
+            // إزالة التنبيه تلقائياً بعد 5 ثوان
+            setTimeout(() => {
+                if (alert.parentNode) {
+                    alert.parentNode.removeChild(alert);
+                }
+            }, 5000);
+        }
+
+        function getAlertIcon(type) {
+            const icons = {
+                'success': 'check-circle',
+                'error': 'exclamation-circle',
+                'warning': 'exclamation-triangle',
+                'info': 'info-circle'
+            };
+            return icons[type] || 'info-circle';
+        }
+
+        // دوال الإجراءات
+        function viewStore(storeId) {
+            window.open(`index.html?store_id=${storeId}`, '_blank');
+        }
+
+        function editStore(storeId) {
+            alert(`سيتم فتح نموذج تعديل المتجر: ${storeId}`);
+        }
+
+        function renewSubscription(storeId) {
+            alert(`سيتم تجديد اشتراك المتجر: ${storeId}`);
+        }
+
+        function viewOrder(orderId) {
+            alert(`عرض تفاصيل الطلب: ${orderId}`);
+        }
+
+        function processCustomer(phone) {
+            alert(`معالجة طلب العميل: ${phone}`);
+        }
+
+        function refreshData() {
+            loadSystemData();
+        }
+
+        function exportData() {
+            alert('جاري تصدير البيانات...');
+        }
+
+        function checkExpiringSubscriptions() {
+            alert('جاري فحص الاشتراكات المنتهية...');
+        }
+
+        function processAllPending() {
+            alert('جاري معالجة جميع الطلبات المعلقة...');
+        }
+
+        function showAddStoreForm() {
+            alert('فتح نموذج إضافة متجر جديد...');
+        }
+
+        function filterStores() {
+            // تنفيذ التصفية حسب البحث والفلتر
+            alert('جاري تصفية المتاجر...');
+        }
+
+        // جعل الدوال متاحة globally
+        window.login = login;
+        window.logout = logout;
+        window.showTab = showTab;
+        window.refreshData = refreshData;
+        window.exportData = exportData;
+        window.checkExpiringSubscriptions = checkExpiringSubscriptions;
+        window.processAllPending = processAllPending;
+        window.viewStore = viewStore;
+        window.editStore = editStore;
+        window.renewSubscription = renewSubscription;
+        window.viewOrder = viewOrder;
+        window.processCustomer = processCustomer;
+        window.showAddStoreForm = showAddStoreForm;
+        window.filterStores = filterStores;
+
+        // السماح بالدخول بالزر Enter
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && document.getElementById('loginContainer').style.display !== 'none') {
+                login();
+            }
+        });
+
+        // تحميل البيانات تلقائياً عند فتح الصفحة إذا كان مسجل الدخول
+        document.addEventListener('DOMContentLoaded', function() {
+            // يمكن إضافة تحميل تلقائي هنا إذا كان المستخدم مسجلاً مسبقاً
+        });
+    </script>
+</body>
+</html>

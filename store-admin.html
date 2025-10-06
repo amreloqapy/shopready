@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم المتجر - ShopReady</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2c5aa0;
+            --secondary-color: #ff6b35;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --dark-color: #343a40;
+            --light-color: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        /* شاشة تسجيل الدخول */
+        .login-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #2c5aa0, #1e3a8a);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .login-box {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: right;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+            background: #2c5aa0;
+            color: white;
+        }
+
+        .error-message {
+            color: #dc3545;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        /* لوحة التحكم */
+        .admin-container {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .admin-container.active {
+            display: flex;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: var(--dark-color);
+            color: white;
+            padding: 1rem 0;
+        }
+
+        .sidebar-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #495057;
+            margin-bottom: 1rem;
+        }
+
+        .store-info {
+            background: rgba(255,255,255,0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            color: #ddd;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 1rem;
+            background: #f8f9fa;
+        }
+
+        .header {
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .content-section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 1rem 1.5rem;
+            background: var(--light-color);
+            border-bottom: 1px solid #ddd;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: right;
+            border-bottom: 1px solid #eee;
+        }
+
+        .btn-sm {
+            padding: 0.3rem 0.7rem;
+            font-size: 0.8rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-primary { background: var(--primary-color); color: white; }
+        .btn-success { background: var(--success-color); color: white; }
+        .btn-danger { background: var(--danger-color); color: white; }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .admin-container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- شاشة تسجيل الدخول -->
+    <div class="login-container" id="loginContainer">
+        <div class="login-box">
+            <h2>🔐 دخول صاحب المتجر</h2>
+            <p>أدخل بيانات الدخول لإدارة متجرك</p>
+            
+            <div class="form-group">
+                <label>كود المتجر</label>
+                <input type="text" id="storeCode" class="form-control" placeholder="أدخل كود المتجر">
+            </div>
+            
+            <div class="form-group">
+                <label>رقم الهاتف</label>
+                <input type="tel" id="storePhone" class="form-control" placeholder="رقم الهاتف المسجل">
+            </div>
+            
+            <button class="btn" onclick="loginToStore()">دخول إلى المتجر</button>
+            
+            <div class="error-message" id="errorMessage">
+                كود المتجر أو رقم الهاتف غير صحيح
+            </div>
+
+            <div style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
+                <p>لا تملك كود متجر؟ <a href="landing-page.html" style="color: #2c5aa0;">أنشئ متجر جديد</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- لوحة تحكم المتجر -->
+    <div class="admin-container" id="adminContainer">
+        <!-- الشريط الجانبي -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h3>🛍️ إدارة المتجر</h3>
+                <div class="store-info">
+                    <strong id="currentStoreName">اسم المتجر</strong>
+                    <div id="currentStoreStatus" style="font-size: 0.8rem; color: #ccc;">حالة المتجر</div>
+                </div>
+            </div>
+
+            <div class="nav-links">
+                <a href="#" class="active" onclick="showTab('dashboard')">📊 لوحة التحكم</a>
+                <a href="#" onclick="showTab('products')">📦 إدارة المنتجات</a>
+                <a href="#" onclick="showTab('orders')">🛒 الطلبات</a>
+                <a href="#" onclick="showTab('categories')">📁 الأقسام</a>
+                <a href="#" onclick="showTab('settings')">⚙️ الإعدادات</a>
+                <a href="#" id="storeLink">🔗 زيارة المتجر</a>
+                <a href="#" onclick="logout()">🚪 تسجيل الخروج</a>
+            </div>
+        </nav>
+
+        <!-- المحتوى الرئيسي -->
+        <main class="main-content">
+            <!-- تبويب لوحة التحكم -->
+            <div id="dashboard-tab" class="tab-content active">
+                <div class="header">
+                    <h1>مرحباً بك في إدارة متجرك</h1>
+                    <div class="header-actions">
+                        <button class="btn btn-primary" onclick="refreshStoreData()">🔄 تحديث</button>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div style="font-size: 2rem;">📦</div>
+                        <div style="font-size: 1.5rem; font-weight: bold;" id="totalProducts">0</div>
+                        <div>منتج</div>
+                    </div>
+                    <div class="stat-card">
+                        <div style="font-size: 2rem;">🛒</div>
+                        <div style="font-size: 1.5rem; font-weight: bold;" id="totalOrders">0</div>
+                        <div>طلبات</div>
+                    </div>
+                    <div class="stat-card">
+                        <div style="font-size: 2rem;">💰</div>
+                        <div style="font-size: 1.5rem; font-weight: bold;" id="totalSales">0</div>
+                        <div>مبيعات</div>
+                    </div>
+                    <div class="stat-card">
+                        <div style="font-size: 2rem;">👥</div>
+                        <div style="font-size: 1.5rem; font-weight: bold;" id="storeVisits">0</div>
+                        <div>زيارات</div>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <div class="section-header">
+                        <h3>📈 نشاط المتجر</h3>
+                    </div>
+                    <div style="padding: 2rem; text-align: center; color: #666;">
+                        <p>إحصائيات وأداء متجرك س تظهر هنا</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- تبويب إدارة المنتجات -->
+            <div id="products-tab" class="tab-content">
+                <div class="header">
+                    <h1>📦 إدارة المنتجات</h1>
+                    <button class="btn btn-success" onclick="showAddProductForm()">+ إضافة منتج</button>
+                </div>
+
+                <div class="content-section">
+                    <div class="section-header">
+                        <h3>قائمة المنتجات</h3>
+                        <input type="text" class="form-control" placeholder="🔍 بحث في المنتجات..." style="width: 300px;">
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>الصورة</th>
+                                    <th>اسم المنتج</th>
+                                    <th>السعر</th>
+                                    <th>المخزون</th>
+                                    <th>الحالة</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productsTable">
+                                <!-- المنتجات تظهر هنا -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- تبويب الطلبات -->
+            <div id="orders-tab" class="tab-content">
+                <div class="header">
+                    <h1>🛒 طلبات المتجر</h1>
+                </div>
+
+                <div class="content-section">
+                    <div class="section-header">
+                        <h3>الطلبات الأخيرة</h3>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>رقم الطلب</th>
+                                    <th>العميل</th>
+                                    <th>المبلغ</th>
+                                    <th>التاريخ</th>
+                                    <th>الحالة</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ordersTable">
+                                <!-- الطلبات تظهر هنا -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- تبويب الإعدادات -->
+            <div id="settings-tab" class="tab-content">
+                <div class="header">
+                    <h1>⚙️ إعدادات المتجر</h1>
+                </div>
+
+                <div class="content-section">
+                    <div class="section-header">
+                        <h3>معلومات المتجر</h3>
+                    </div>
+                    <div style="padding: 2rem;">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>اسم المتجر</label>
+                                <input type="text" id="storeName" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>رقم الهاتف</label>
+                                <input type="tel" id="storePhone" class="form-control">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>وصف المتجر</label>
+                            <textarea id="storeDescription" class="form-control" rows="3"></textarea>
+                        </div>
+
+                        <button class="btn btn-success" onclick="saveStoreSettings()">💾 حفظ الإعدادات</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // بيانات المتجر الحالي
+        let currentStore = null;
+        let storeData = {
+            products: [],
+            orders: [],
+            settings: {}
+        };
+
+        // تسجيل الدخول إلى المتجر
+        function loginToStore() {
+            const storeCode = document.getElementById('storeCode').value;
+            const phone = document.getElementById('storePhone').value;
+
+            // البحث عن المتجر في localStorage
+            const stores = JSON.parse(localStorage.getItem('stores') || '[]');
+            const store = stores.find(s => s.Store_ID === storeCode && s.Phone === phone);
+
+            if (store) {
+                currentStore = store;
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('adminContainer').classList.add('active');
+                
+                // تحميل بيانات المتجر
+                loadStoreData();
+                updateStoreInfo();
+                
+            } else {
+                document.getElementById('errorMessage').style.display = 'block';
+            }
+        }
+
+        // تحميل بيانات المتجر
+        function loadStoreData() {
+            // تحميل المنتجات
+            const allProducts = JSON.parse(localStorage.getItem('products') || '[]');
+            storeData.products = allProducts.filter(p => p.storeId === currentStore.Store_ID);
+            
+            // تحميل الطلبات
+            const allOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+            storeData.orders = allOrders.filter(o => o.storeId === currentStore.Store_ID);
+            
+            updateDashboard();
+            updateProductsTable();
+            updateOrdersTable();
+        }
+
+        // تحديث معلومات المتجر
+        function updateStoreInfo() {
+            document.getElementById('currentStoreName').textContent = currentStore.Store_Name;
+            document.getElementById('currentStoreStatus').textContent = currentStore.Status === 'active' ? 'نشط' : 'غير نشط';
+            
+            // تحديث رابط المتجر
+            const storeLink = document.getElementById('storeLink');
+            storeLink.href = `index.html?store_id=${currentStore.Store_ID}`;
+            storeLink.target = '_blank';
+        }
+
+        // تبديل التبويبات
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            document.getElementById(tabName + '-tab').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // تحديث لوحة التحكم
+        function updateDashboard() {
+            document.getElementById('totalProducts').textContent = storeData.products.length;
+            document.getElementById('totalOrders').textContent = storeData.orders.length;
+            
+            const totalSales = storeData.orders.reduce((sum, order) => sum + (order.total || 0), 0);
+            document.getElementById('totalSales').textContent = totalSales;
+        }
+
+        // تحديث جدول المنتجات
+        function updateProductsTable() {
+            const tbody = document.getElementById('productsTable');
+            tbody.innerHTML = '';
+            
+            storeData.products.forEach(product => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${product.image || '📦'}</td>
+                    <td>${product.name}</td>
+                    <td>${product.price} جنيه</td>
+                    <td>${product.stock || 0}</td>
+                    <td>${product.status === 'active' ? 'نشط' : 'غير نشط'}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-sm btn-primary">تعديل</button>
+                            <button class="btn-sm btn-danger">حذف</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // تحديث جدول الطلبات
+        function updateOrdersTable() {
+            const tbody = document.getElementById('ordersTable');
+            tbody.innerHTML = '';
+            
+            storeData.orders.forEach(order => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${order.id}</td>
+                    <td>${order.customerName}</td>
+                    <td>${order.total} جنيه</td>
+                    <td>${order.date}</td>
+                    <td>${order.status}</td>
+                    <td>
+                        <button class="btn-sm btn-primary">عرض</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // إضافة منتج جديد
+        function showAddProductForm() {
+            const productName = prompt('اسم المنتج:');
+            if (productName) {
+                const productPrice = prompt('سعر المنتج:');
+                if (productPrice) {
+                    const newProduct = {
+                        id: 'PROD_' + Date.now(),
+                        name: productName,
+                        price: parseInt(productPrice),
+                        stock: 10,
+                        status: 'active',
+                        storeId: currentStore.Store_ID,
+                        image: '📦'
+                    };
+                    
+                    storeData.products.push(newProduct);
+                    saveProducts();
+                    updateProductsTable();
+                    updateDashboard();
+                    
+                    alert('تم إضافة المنتج بنجاح!');
+                }
+            }
+        }
+
+        // حفظ المنتجات
+        function saveProducts() {
+            const allProducts = JSON.parse(localStorage.getItem('products') || '[]');
+            const otherProducts = allProducts.filter(p => p.storeId !== currentStore.Store_ID);
+            const updatedProducts = [...otherProducts, ...storeData.products];
+            localStorage.setItem('products', JSON.stringify(updatedProducts));
+        }
+
+        // حفظ الإعدادات
+        function saveStoreSettings() {
+            const storeName = document.getElementById('storeName').value;
+            const phone = document.getElementById('storePhone').value;
+            const description = document.getElementById('storeDescription').value;
+            
+            if (storeName) {
+                currentStore.Store_Name = storeName;
+                currentStore.Phone = phone;
+                
+                // تحديث في localStorage
+                const stores = JSON.parse(localStorage.getItem('stores') || '[]');
+                const storeIndex = stores.findIndex(s => s.Store_ID === currentStore.Store_ID);
+                if (storeIndex !== -1) {
+                    stores[storeIndex] = currentStore;
+                    localStorage.setItem('stores', JSON.stringify(stores));
+                }
+                
+                updateStoreInfo();
+                alert('تم حفظ الإعدادات بنجاح!');
+            }
+        }
+
+        // تسجيل الخروج
+        function logout() {
+            if (confirm('هل تريد تسجيل الخروج؟')) {
+                currentStore = null;
+                document.getElementById('adminContainer').classList.remove('active');
+                document.getElementById('loginContainer').style.display = 'flex';
+                document.getElementById('storeCode').value = '';
+                document.getElementById('storePhone').value = '';
+            }
+        }
+
+        // السماح بالدخول بالزر Enter
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && document.getElementById('loginContainer').style.display !== 'none') {
+                loginToStore();
+            }
+        });
+    </script>
+</body>
+</html>
