@@ -1,0 +1,14 @@
+{
+  "type": "web",
+  "static": [
+    "*.html",
+    "*.js", 
+    "*.css",
+    "google-sheets/*",
+    "templates/**/*",
+    "js/*",
+    "css/*",
+    "assets/*"
+  ],
+  "start": "python3 -m http.server 8000"
+}
