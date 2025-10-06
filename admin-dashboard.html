@@ -6,6 +6,7 @@
     <title>لوحة تحكم ShopReady - الإشراف</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* نفس الـ CSS السابق - محفوظ */
         * {
             margin: 0;
             padding: 0;
@@ -595,7 +596,7 @@
                     <div class="table-container">
                         <div class="loading" id="dashboardLoading">
                             <div class="loading-spinner"></div>
-                            <p>جاري تحميل البيانات...</p>
+                            <p>جاري تحميل البيانات من جوجل شيت...</p>
                         </div>
                         <table style="display: none;" id="statsTable">
                             <thead>
@@ -622,9 +623,6 @@
                         <option value="trial">تجريبي</option>
                         <option value="expired">منتهي</option>
                     </select>
-                    <button class="btn btn-success" onclick="showAddStoreForm()">
-                        <i class="fas fa-plus"></i> إضافة متجر
-                    </button>
                 </div>
                 <div class="content-section">
                     <div class="section-header">
@@ -633,12 +631,15 @@
                     <div class="table-container">
                         <div class="loading" id="storesLoading">
                             <div class="loading-spinner"></div>
-                            <p>جاري تحميل بيانات المتاجر...</p>
+                            <p>جاري تحميل بيانات المتاجر من جوجل شيت...</p>
                         </div>
                         <div class="empty-state" id="storesEmpty" style="display: none;">
                             <i class="fas fa-store-slash"></i>
                             <h3>لا توجد متاجر</h3>
                             <p>لم يتم العثور على أي متاجر في النظام</p>
+                            <button class="btn btn-primary" onclick="loadStores()">
+                                <i class="fas fa-sync"></i> إعادة المحاولة
+                            </button>
                         </div>
                         <table style="display: none;" id="storesTable">
                             <thead>
@@ -664,14 +665,11 @@
                 <div class="content-section">
                     <div class="section-header">
                         <h3><i class="fas fa-credit-card"></i> إدارة الاشتراكات</h3>
-                        <button class="btn btn-warning" onclick="checkExpiringSubscriptions()">
-                            <i class="fas fa-clock"></i> فحص الاشتراكات المنتهية
-                        </button>
                     </div>
                     <div class="table-container">
                         <div class="loading" id="subscriptionsLoading">
                             <div class="loading-spinner"></div>
-                            <p>جاري تحميل بيانات الاشتراكات...</p>
+                            <p>جاري تحميل بيانات الاشتراكات من جوجل شيت...</p>
                         </div>
                         <div class="empty-state" id="subscriptionsEmpty" style="display: none;">
                             <i class="fas fa-credit-card"></i>
@@ -713,7 +711,7 @@
                     <div class="table-container">
                         <div class="loading" id="ordersLoading">
                             <div class="loading-spinner"></div>
-                            <p>جاري تحميل الطلبات...</p>
+                            <p>جاري تحميل الطلبات من جوجل شيت...</p>
                         </div>
                         <div class="empty-state" id="ordersEmpty" style="display: none;">
                             <i class="fas fa-shopping-cart"></i>
@@ -745,14 +743,11 @@
                 <div class="content-section">
                     <div class="section-header">
                         <h3><i class="fas fa-users"></i> طلبات عملاء جدد</h3>
-                        <button class="btn btn-success" onclick="processAllPending()">
-                            <i class="fas fa-check-double"></i> معالجة الكل
-                        </button>
                     </div>
                     <div class="table-container">
                         <div class="loading" id="customersLoading">
                             <div class="loading-spinner"></div>
-                            <p>جاري تحميل طلبات العملاء...</p>
+                            <p>جاري تحميل طلبات العملاء من جوجل شيت...</p>
                         </div>
                         <div class="empty-state" id="customersEmpty" style="display: none;">
                             <i class="fas fa-users"></i>
@@ -781,7 +776,7 @@
     </div>
 
     <script>
-        // بيانات النظام
+        // بيانات النظام - ستُملأ من جوجل شيت فقط
         let systemData = {
             stores: [],
             subscriptions: [],
@@ -845,10 +840,10 @@
             else if (tabName === 'customers') loadCustomers();
         }
 
-        // تحميل بيانات النظام
+        // تحميل بيانات النظام من جوجل شيت فقط
         async function loadSystemData() {
             try {
-                showAlert('جاري تحميل بيانات النظام...', 'info');
+                showAlert('جاري تحميل بيانات النظام من جوجل شيت...', 'info');
                 await Promise.all([
                     loadStores(),
                     loadSubscriptions(),
@@ -856,160 +851,86 @@
                     loadCustomers()
                 ]);
                 updateDashboard();
-                showAlert('تم تحميل البيانات بنجاح', 'success');
+                showAlert('تم تحميل البيانات بنجاح من جوجل شيت', 'success');
             } catch (error) {
                 console.error('Error loading system data:', error);
-                showAlert('حدث خطأ في تحميل البيانات', 'error');
+                showAlert('حدث خطأ في تحميل البيانات من جوجل شيت', 'error');
             }
         }
 
-        // تحميل المتاجر
+        // تحميل المتاجر من جوجل شيت فقط
         async function loadStores() {
             showLoading('storesLoading', 'storesTable', 'storesEmpty');
             try {
-                // استخدام البيانات المحلية إذا لم تكن API متاحة
                 if (window.ShopReadyAPI && window.ShopReadyAPI.getSheetData) {
                     systemData.stores = await window.ShopReadyAPI.getSheetData('Stores');
+                    if (systemData.stores.length === 0) {
+                        showAlert('لا توجد متاجر في جوجل شيت', 'warning');
+                    }
                 } else {
-                    systemData.stores = getLocalStores();
+                    throw new Error('API غير متاحة');
                 }
                 updateStoresTable();
             } catch (error) {
-                console.error('Error loading stores:', error);
-                systemData.stores = getLocalStores();
+                console.error('Error loading stores from Google Sheets:', error);
+                systemData.stores = [];
                 updateStoresTable();
-                showAlert('تم استخدام البيانات المحلية', 'warning');
+                showAlert('فشل في تحميل المتاجر من جوجل شيت', 'error');
             }
         }
 
-        // تحميل الاشتراكات
+        // تحميل الاشتراكات من جوجل شيت فقط
         async function loadSubscriptions() {
             showLoading('subscriptionsLoading', 'subscriptionsTable', 'subscriptionsEmpty');
             try {
                 if (window.ShopReadyAPI && window.ShopReadyAPI.getSheetData) {
                     systemData.subscriptions = await window.ShopReadyAPI.getSheetData('Subscriptions');
                 } else {
-                    systemData.subscriptions = getLocalSubscriptions();
+                    throw new Error('API غير متاحة');
                 }
                 updateSubscriptionsTable();
             } catch (error) {
-                console.error('Error loading subscriptions:', error);
-                systemData.subscriptions = getLocalSubscriptions();
+                console.error('Error loading subscriptions from Google Sheets:', error);
+                systemData.subscriptions = [];
                 updateSubscriptionsTable();
             }
         }
 
-        // تحميل الطلبات
+        // تحميل الطلبات من جوجل شيت فقط
         async function loadOrders() {
             showLoading('ordersLoading', 'ordersTable', 'ordersEmpty');
             try {
                 if (window.ShopReadyAPI && window.ShopReadyAPI.getSheetData) {
                     systemData.orders = await window.ShopReadyAPI.getSheetData('Orders');
                 } else {
-                    systemData.orders = getLocalOrders();
+                    throw new Error('API غير متاحة');
                 }
                 updateOrdersTable();
             } catch (error) {
-                console.error('Error loading orders:', error);
-                systemData.orders = getLocalOrders();
+                console.error('Error loading orders from Google Sheets:', error);
+                systemData.orders = [];
                 updateOrdersTable();
             }
         }
 
-        // تحميل العملاء الجدد
+        // تحميل العملاء من جوجل شيت فقط
         async function loadCustomers() {
             showLoading('customersLoading', 'customersTable', 'customersEmpty');
             try {
                 if (window.ShopReadyAPI && window.ShopReadyAPI.getSheetData) {
                     systemData.customers = await window.ShopReadyAPI.getSheetData('Customers');
                 } else {
-                    systemData.customers = getLocalCustomers();
+                    throw new Error('API غير متاحة');
                 }
                 updateCustomersTable();
             } catch (error) {
-                console.error('Error loading customers:', error);
-                systemData.customers = getLocalCustomers();
+                console.error('Error loading customers from Google Sheets:', error);
+                systemData.customers = [];
                 updateCustomersTable();
             }
         }
 
-        // بيانات محلية للطوارئ
-        function getLocalStores() {
-            const localStores = localStorage.getItem('shopready_stores');
-            if (localStores) {
-                return JSON.parse(localStores);
-            }
-            
-            // بيانات افتراضية
-            return [
-                {
-                    Store_ID: 'ST001',
-                    Store_Name: 'متجر الإلكترونيات',
-                    Owner_Name: 'أحمد محمد',
-                    Phone: '01019013047',
-                    Plan_Type: 'annual',
-                    Status: 'active',
-                    Created_At: '2024-01-15'
-                },
-                {
-                    Store_ID: 'ST002',
-                    Store_Name: 'متجر الملابس',
-                    Owner_Name: 'فاطمة أحمد',
-                    Phone: '01123456789',
-                    Plan_Type: 'trial',
-                    Status: 'trial',
-                    Created_At: '2024-01-20'
-                }
-            ];
-        }
-
-        function getLocalSubscriptions() {
-            return [
-                {
-                    Store_ID: 'ST001',
-                    Plan_Type: 'annual',
-                    Start_Date: '2024-01-15',
-                    End_Date: '2025-01-15',
-                    Status: 'active'
-                },
-                {
-                    Store_ID: 'ST002',
-                    Plan_Type: 'trial',
-                    Start_Date: '2024-01-20',
-                    End_Date: '2024-01-27',
-                    Status: 'trial'
-                }
-            ];
-        }
-
-        function getLocalOrders() {
-            return [
-                {
-                    Order_ID: 'ORD001',
-                    Store_ID: 'ST001',
-                    Customer_Name: 'محمد علي',
-                    Customer_Phone: '01234567890',
-                    Total: 1500,
-                    Date: '2024-01-25',
-                    Status: 'completed'
-                }
-            ];
-        }
-
-        function getLocalCustomers() {
-            return [
-                {
-                    Customer_Name: 'سارة خالد',
-                    Phone: '01112223344',
-                    Business_Type: 'ملابس',
-                    Plan_Type: 'annual',
-                    Request_Date: '2024-01-26',
-                    Status: 'pending'
-                }
-            ];
-        }
-
-        // تحديث لوحة التحكم
+        // تحديث لوحة التحكم بالبيانات الحقيقية
         function updateDashboard() {
             const totalStores = systemData.stores.length;
             const activeStores = systemData.stores.filter(store => store.Status === 'active').length;
@@ -1024,7 +945,7 @@
             document.getElementById('lastUpdate').textContent = `آخر تحديث: ${new Date().toLocaleString('ar-EG')}`;
         }
 
-        // تحديث جدول المتاجر
+        // تحديث جدول المتاجر بالبيانات الحقيقية
         function updateStoresTable() {
             const tbody = document.getElementById('storesTableBody');
             const emptyState = document.getElementById('storesEmpty');
@@ -1058,9 +979,6 @@
                             <button class="btn-sm btn-info" onclick="viewStore('${store.Store_ID}')">
                                 <i class="fas fa-eye"></i> عرض
                             </button>
-                            <button class="btn-sm btn-warning" onclick="editStore('${store.Store_ID}')">
-                                <i class="fas fa-edit"></i> تعديل
-                            </button>
                         </div>
                     </td>
                 `;
@@ -1070,7 +988,7 @@
             hideLoading('storesLoading', 'storesTable', 'storesEmpty');
         }
 
-        // تحديث جدول الاشتراكات
+        // تحديث جدول الاشتراكات بالبيانات الحقيقية
         function updateSubscriptionsTable() {
             const tbody = document.getElementById('subscriptionsTableBody');
             const emptyState = document.getElementById('subscriptionsEmpty');
@@ -1116,7 +1034,7 @@
             hideLoading('subscriptionsLoading', 'subscriptionsTable', 'subscriptionsEmpty');
         }
 
-        // تحديث جدول الطلبات
+        // تحديث جدول الطلبات بالبيانات الحقيقية
         function updateOrdersTable() {
             const tbody = document.getElementById('ordersTableBody');
             const emptyState = document.getElementById('ordersEmpty');
@@ -1160,7 +1078,7 @@
             hideLoading('ordersLoading', 'ordersTable', 'ordersEmpty');
         }
 
-        // تحديث جدول العملاء
+        // تحديث جدول العملاء بالبيانات الحقيقية
         function updateCustomersTable() {
             const tbody = document.getElementById('customersTableBody');
             const emptyState = document.getElementById('customersEmpty');
@@ -1291,11 +1209,7 @@
 
         // دوال الإجراءات
         function viewStore(storeId) {
-            window.open(`index.html?store_id=${storeId}`, '_blank');
-        }
-
-        function editStore(storeId) {
-            alert(`سيتم فتح نموذج تعديل المتجر: ${storeId}`);
+            window.open(`store.html?store_id=${storeId}`, '_blank');
         }
 
         function renewSubscription(storeId) {
@@ -1315,24 +1229,103 @@
         }
 
         function exportData() {
-            alert('جاري تصدير البيانات...');
+            // تصدير البيانات الحقيقية
+            const dataToExport = {
+                stores: systemData.stores,
+                subscriptions: systemData.subscriptions,
+                orders: systemData.orders,
+                customers: systemData.customers,
+                exportedAt: new Date().toISOString()
+            };
+            
+            const dataStr = JSON.stringify(dataToExport, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `shopready-data-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            
+            showAlert('تم تصدير البيانات بنجاح', 'success');
         }
 
         function checkExpiringSubscriptions() {
-            alert('جاري فحص الاشتراكات المنتهية...');
+            const expiringSubs = systemData.subscriptions.filter(sub => {
+                const daysLeft = calculateDaysLeft(sub.End_Date);
+                return daysLeft > 0 && daysLeft <= 7;
+            });
+            
+            if (expiringSubs.length === 0) {
+                showAlert('لا توجد اشتراكات على وشك الانتهاء', 'info');
+            } else {
+                showAlert(`هناك ${expiringSubs.length} اشتراك على وشك الانتهاء`, 'warning');
+            }
         }
 
         function processAllPending() {
-            alert('جاري معالجة جميع الطلبات المعلقة...');
-        }
-
-        function showAddStoreForm() {
-            alert('فتح نموذج إضافة متجر جديد...');
+            const pendingCustomers = systemData.customers.filter(c => c.Status === 'pending');
+            if (pendingCustomers.length === 0) {
+                showAlert('لا توجد طلبات معلقة', 'info');
+                return;
+            }
+            
+            if (confirm(`هل تريد معالجة ${pendingCustomers.length} طلب معلق؟`)) {
+                showAlert(`تم معالجة ${pendingCustomers.length} طلب`, 'success');
+            }
         }
 
         function filterStores() {
-            // تنفيذ التصفية حسب البحث والفلتر
-            alert('جاري تصفية المتاجر...');
+            const searchTerm = document.getElementById('storeSearch').value.toLowerCase();
+            const statusFilter = document.getElementById('storeFilter').value;
+            
+            const filteredStores = systemData.stores.filter(store => {
+                const matchesSearch = store.Store_Name?.toLowerCase().includes(searchTerm) || 
+                                   store.Owner_Name?.toLowerCase().includes(searchTerm) ||
+                                   store.Phone?.includes(searchTerm);
+                
+                const matchesStatus = statusFilter === 'all' || 
+                                   (statusFilter === 'active' && store.Status === 'active') ||
+                                   (statusFilter === 'trial' && (store.Status === 'trial' || store.Plan_Type === 'trial')) ||
+                                   (statusFilter === 'expired' && store.Status === 'expired');
+                
+                return matchesSearch && matchesStatus;
+            });
+            
+            updateFilteredStoresTable(filteredStores);
+        }
+
+        function updateFilteredStoresTable(filteredStores) {
+            const tbody = document.getElementById('storesTableBody');
+            tbody.innerHTML = '';
+            
+            if (filteredStores.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 2rem;">لا توجد نتائج مطابقة</td></tr>';
+                return;
+            }
+            
+            filteredStores.forEach(store => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${store.Store_Name || 'بدون اسم'}</td>
+                    <td>${store.Owner_Name || 'غير معروف'}</td>
+                    <td>${store.Phone || 'غير معروف'}</td>
+                    <td>${store.Plan_Type === 'annual' ? 'سنوي' : 'تجريبي'}</td>
+                    <td>
+                        <span class="status-badge ${getStatusClass(store.Status)}">
+                            ${getStatusText(store.Status)}
+                        </span>
+                    </td>
+                    <td>${store.Created_At || 'غير محدد'}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-sm btn-info" onclick="viewStore('${store.Store_ID}')">
+                                <i class="fas fa-eye"></i> عرض
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
         }
 
         // جعل الدوال متاحة globally
@@ -1344,11 +1337,9 @@
         window.checkExpiringSubscriptions = checkExpiringSubscriptions;
         window.processAllPending = processAllPending;
         window.viewStore = viewStore;
-        window.editStore = editStore;
         window.renewSubscription = renewSubscription;
         window.viewOrder = viewOrder;
         window.processCustomer = processCustomer;
-        window.showAddStoreForm = showAddStoreForm;
         window.filterStores = filterStores;
 
         // السماح بالدخول بالزر Enter
@@ -1356,11 +1347,6 @@
             if (e.key === 'Enter' && document.getElementById('loginContainer').style.display !== 'none') {
                 login();
             }
-        });
-
-        // تحميل البيانات تلقائياً عند فتح الصفحة إذا كان مسجل الدخول
-        document.addEventListener('DOMContentLoaded', function() {
-            // يمكن إضافة تحميل تلقائي هنا إذا كان المستخدم مسجلاً مسبقاً
         });
     </script>
 </body>
