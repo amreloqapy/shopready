@@ -3,11 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-title">متجر إلكتروني - ShopReady</title>
+    <title>ShopReady - متجرك الإلكتروني في دقائق</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- مكتبة QR Code -->
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <style>
+        /* أنماط أساسية */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
         :root {
             --primary: #2c5aa0;
             --secondary: #1e3a8a;
@@ -15,15 +21,6 @@
             --light: #f8f9fa;
             --dark: #333;
             --success: #28a745;
-            --warning: #ffc107;
-            --danger: #dc3545;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
@@ -39,19 +36,14 @@
             padding: 0 15px;
         }
         
-        /* الهيدر المحسن */
+        /* الهيدر */
         .header {
             background: white;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
-            position: sticky;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
             top: 0;
             z-index: 1000;
-            transition: all 0.3s;
-        }
-        
-        .header.scrolled {
-            padding: 0.5rem 0;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
         }
         
         .header .container {
@@ -61,34 +53,9 @@
             padding: 1rem 15px;
         }
         
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .logo-image {
-            width: 50px;
-            height: 50px;
-            border-radius: 10px;
-            background: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-        
-        .logo-text h1 {
+        .logo h1 {
             color: var(--primary);
-            font-size: 1.5rem;
-            margin-bottom: 0.2rem;
-        }
-        
-        .logo-text small {
-            color: #666;
-            font-size: 0.8rem;
+            font-size: 1.8rem;
         }
         
         .nav-links {
@@ -105,76 +72,23 @@
             color: var(--dark);
             font-weight: 500;
             transition: color 0.3s;
-            padding: 0.5rem 0;
-            position: relative;
         }
         
-        .nav-links a.active {
+        .nav-links a:hover {
             color: var(--primary);
         }
         
-        .nav-links a.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 100%;
-            height: 3px;
-            background: var(--primary);
-            border-radius: 3px;
-        }
-        
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .cart-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 0.7rem 1.2rem;
-            border-radius: 50px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s;
-            position: relative;
-        }
-        
-        .cart-btn:hover {
-            background: var(--secondary);
-            transform: translateY(-2px);
-        }
-        
-        .cart-count {
-            background: var(--accent);
-            color: white;
-            border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            position: absolute;
-            top: -5px;
-            left: -5px;
-        }
-        
-        /* قسم الترحيب */
-        .welcome-banner {
+        /* قسم البطل */
+        .landing-hero {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            padding: 120px 0 80px;
+            padding: 150px 0 100px;
             text-align: center;
             position: relative;
             overflow: hidden;
         }
         
-        .welcome-banner::before {
+        .landing-hero::before {
             content: '';
             position: absolute;
             top: 0;
@@ -185,14 +99,14 @@
             opacity: 0.1;
         }
         
-        .welcome-banner h1 {
-            font-size: 2.5rem;
+        .landing-hero h1 {
+            font-size: 3rem;
             margin-bottom: 1.5rem;
             animation: fadeInUp 1s ease;
         }
         
-        .welcome-banner p {
-            font-size: 1.2rem;
+        .landing-hero p {
+            font-size: 1.3rem;
             margin-bottom: 2.5rem;
             opacity: 0.9;
             max-width: 700px;
@@ -201,536 +115,276 @@
             animation: fadeInUp 1s ease 0.2s both;
         }
         
-        .quick-actions {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-            animation: fadeInUp 1s ease 0.4s both;
-        }
-        
-        .action-btn {
-            background: rgba(255,255,255,0.2);
+        .cta-button {
+            background: var(--accent);
             color: white;
-            padding: 0.8rem 1.5rem;
+            padding: 1rem 2.5rem;
+            border: none;
             border-radius: 50px;
-            text-decoration: none;
-            transition: all 0.3s;
-            border: 1px solid rgba(255,255,255,0.3);
-        }
-        
-        .action-btn:hover {
-            background: rgba(255,255,255,0.3);
-            transform: translateY(-3px);
-        }
-        
-        /* قسم التصفية */
-        .filters-section {
-            background: white;
-            padding: 2rem 0;
-            margin: 2rem 0;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        }
-        
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding: 0 1.5rem;
-        }
-        
-        .section-header h2 {
-            color: var(--primary);
-        }
-        
-        .filter-info {
-            color: #666;
-            font-size: 0.9rem;
-        }
-        
-        .filter-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-            padding: 0 1.5rem;
-        }
-        
-        .category-btn {
-            background: #f8f9fa;
-            border: 1px solid #e9ecef;
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
+            font-size: 1.2rem;
             cursor: pointer;
             transition: all 0.3s;
+            animation: fadeInUp 1s ease 0.4s both;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
         }
         
-        .category-btn.active {
+        .cta-button:hover {
+            background: #e55a2b;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+        }
+        
+        /* المميزات */
+        .features-section {
+            padding: 100px 0;
+            background: var(--light);
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            font-size: 2.5rem;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 3rem;
+            font-size: 1.2rem;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 2.5rem 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+        
+        .feature-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            color: var(--dark);
+            font-size: 1.5rem;
+        }
+        
+        .feature-card p {
+            color: #666;
+            line-height: 1.7;
+        }
+        
+        /* الباقات */
+        .pricing-section {
+            padding: 100px 0;
+            background: white;
+        }
+        
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .pricing-card {
+            background: white;
+            padding: 3rem 2rem;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px solid #eaeaea;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .pricing-card.featured {
+            border-color: var(--primary);
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(44, 90, 160, 0.15);
+        }
+        
+        .pricing-card.featured::before {
+            content: 'الأكثر طلباً';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
             background: var(--primary);
             color: white;
-            border-color: var(--primary);
+            padding: 5px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
         }
         
-        .advanced-filters {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            padding: 0 1.5rem;
+        .price {
+            font-size: 3rem;
+            color: var(--primary);
+            margin: 1.5rem 0;
+            font-weight: bold;
         }
         
-        .filter-select, .search-box {
-            padding: 0.7rem 1rem;
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            background: white;
-            flex: 1;
-            min-width: 150px;
-        }
-        
-        .search-container {
-            position: relative;
-            flex: 2;
-            min-width: 200px;
-        }
-        
-        .clear-search {
-            position: absolute;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
+        .price span {
+            font-size: 1rem;
             color: #666;
-            cursor: pointer;
-            font-size: 1.2rem;
+            font-weight: normal;
         }
         
-        /* قسم المنتجات */
-        .products-section {
-            margin: 3rem 0;
+        .pricing-card ul {
+            text-align: right;
+            list-style: none;
+            margin: 2rem 0;
+            padding: 0;
         }
         
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 2rem;
-        }
-        
-        .product-card {
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            transition: all 0.3s;
+        .pricing-card li {
+            margin-bottom: 1rem;
+            padding-right: 1.5rem;
             position: relative;
         }
         
-        .product-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        .pricing-card li::before {
+            content: '✓';
+            position: absolute;
+            right: 0;
+            color: var(--success);
+            font-weight: bold;
         }
         
-        .product-image {
-            height: 200px;
-            background: #f8f9fa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
+        /* نموذج الطلب */
+        .order-form {
+            background: var(--light);
+            padding: 100px 0;
         }
         
-        .product-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s;
+        .form-container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            padding: 3rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
         }
         
-        .product-card:hover .product-image img {
-            transform: scale(1.1);
+        .form-group {
+            margin-bottom: 1.8rem;
         }
         
-        .product-info {
-            padding: 1.5rem;
-        }
-        
-        .product-title {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
+        .form-group label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
             color: var(--dark);
         }
         
-        .product-description {
-            color: #666;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-        
-        .product-price {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-        
-        .add-to-cart {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 0.7rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
+        .form-group input,
+        .form-group select {
             width: 100%;
-            transition: all 0.3s;
+            padding: 1rem;
+            border: 2px solid #eaeaea;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
         }
         
-        .add-to-cart:hover {
-            background: var(--secondary);
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--primary);
+            outline: none;
         }
         
-        /* قسم QR Code */
+        /* أنماط QR Code */
         .qr-section {
-            background: white;
-            padding: 2.5rem;
+            background: #f8f9fa;
+            padding: 2rem;
             border-radius: 15px;
-            margin: 3rem 0;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            margin: 2rem 0;
             text-align: center;
-        }
-        
-        .qr-section h3 {
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-        
-        .qr-section p {
-            color: #666;
-            margin-bottom: 2rem;
+            border: 2px dashed var(--primary);
         }
         
         .qr-code-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1.5rem;
-        }
-        
-        .qr-code {
-            background: white;
+            margin: 1.5rem auto;
             padding: 1.5rem;
+            background: white;
             border-radius: 10px;
+            display: inline-block;
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 250px;
-            min-width: 250px;
-        }
-        
-        .qr-placeholder {
-            text-align: center;
-            color: #666;
         }
         
         .qr-actions {
             display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
             justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
         }
         
-        .btn {
-            padding: 0.8rem 1.5rem;
+        .qr-button {
+            background: var(--primary);
+            color: white;
             border: none;
+            padding: 0.8rem 1.5rem;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s;
             font-size: 1rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
         }
         
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-        
-        .btn-primary:hover {
+        .qr-button:hover {
             background: var(--secondary);
             transform: translateY(-2px);
         }
         
-        .btn-success {
-            background: var(--success);
-            color: white;
-        }
-        
-        .btn-success:hover {
-            background: #218838;
-            transform: translateY(-2px);
-        }
-        
-        .btn-secondary {
+        .qr-button.secondary {
             background: #6c757d;
-            color: white;
         }
         
-        .btn-secondary:hover {
-            background: #545b62;
-            transform: translateY(-2px);
+        .qr-button.secondary:hover {
+            background: #5a6268;
         }
         
-        .btn-sm {
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
+        .qr-button.success {
+            background: var(--success);
         }
         
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--primary);
-            color: var(--primary);
-        }
-        
-        .btn-outline:hover {
-            background: var(--primary);
-            color: white;
-        }
-        
-        .qr-info {
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid #eee;
-        }
-        
-        .store-url {
-            background: #f8f9fa;
-            padding: 1rem;
-            border-radius: 8px;
-            margin: 1rem 0;
-            word-break: break-all;
-            font-family: monospace;
-        }
-        
-        /* قسم عن المتجر واتصل بنا */
-        .content-section {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            margin-bottom: 2rem;
-            overflow: hidden;
-        }
-        
-        .content-section .section-header {
-            background: #f8f9fa;
-            padding: 1.5rem;
-            margin-bottom: 0;
-        }
-        
-        .content-section .section-header h2 {
-            margin: 0;
-        }
-        
-        .content-body {
-            padding: 2rem;
-        }
-        
-        .contact-info {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-        }
-        
-        .contact-item {
-            background: #f8f9fa;
-            padding: 1.5rem;
-            border-radius: 10px;
-            border-left: 4px solid var(--primary);
-        }
-        
-        /* سلة التسوق */
-        .cart-sidebar {
-            position: fixed;
-            top: 0;
-            left: -400px;
-            width: 380px;
-            height: 100vh;
-            background: white;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            transition: left 0.3s ease;
-            z-index: 1100;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .cart-sidebar.open {
-            left: 0;
-        }
-        
-        .cart-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .close-cart {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #666;
-        }
-        
-        .cart-items {
-            flex: 1;
-            overflow-y: auto;
-            padding: 1rem;
-        }
-        
-        .cart-item {
-            display: flex;
-            gap: 1rem;
-            padding: 1rem;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .cart-item-image {
-            width: 60px;
-            height: 60px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .cart-item-details {
-            flex: 1;
-        }
-        
-        .cart-item-title {
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-        
-        .cart-item-price {
-            color: var(--primary);
-            font-weight: bold;
-        }
-        
-        .cart-item-actions {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .quantity-btn {
-            background: #f8f9fa;
-            border: none;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-        
-        .cart-footer {
-            padding: 1.5rem;
-            border-top: 1px solid #eee;
-        }
-        
-        .cart-summary {
-            text-align: center;
-        }
-        
-        .cart-total {
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
-            color: var(--primary);
-        }
-        
-        .cart-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-        
-        .checkout-btn {
-            flex: 1;
-        }
-        
-        /* الفوتر */
-        footer {
-            background: var(--dark);
-            color: white;
-            padding: 3rem 0 2rem;
-            margin-top: 3rem;
-        }
-        
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-        
-        .footer-column h4 {
-            margin-bottom: 1rem;
-            color: white;
-        }
-        
-        .footer-links {
-            list-style: none;
-        }
-        
-        .footer-links li {
-            margin-bottom: 0.5rem;
-        }
-        
-        .footer-links a {
-            color: #ccc;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        
-        .footer-links a:hover {
-            color: white;
-        }
-        
-        .footer-bottom {
-            text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid #444;
-            color: #ccc;
-        }
-        
-        /* أنيميشن */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .fade-in {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s, transform 0.6s;
-        }
-        
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
+        .qr-button.success:hover {
+            background: #218838;
         }
         
         /* زر الصعود للأعلى */
@@ -767,46 +421,53 @@
             box-shadow: 0 6px 20px rgba(44, 90, 160, 0.4);
         }
         
-        /* رسائل التنبيه */
-        .alert {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
+        /* الفوتر */
+        footer {
+            background: var(--dark);
             color: white;
-            z-index: 1200;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            animation: slideInRight 0.3s ease;
-            max-width: 400px;
+            padding: 3rem 0;
+            text-align: center;
         }
         
-        .alert-success {
-            background: var(--success);
+        footer p {
+            margin-bottom: 0.5rem;
         }
         
-        .alert-error {
-            background: var(--danger);
-        }
-        
-        .alert-warning {
-            background: var(--warning);
-            color: var(--dark);
-        }
-        
-        .alert-info {
-            background: var(--primary);
-        }
-        
-        @keyframes slideInRight {
+        /* أنيميشن */
+        @keyframes fadeInUp {
             from {
-                transform: translateX(100%);
                 opacity: 0;
+                transform: translateY(30px);
             }
             to {
-                transform: translateX(0);
                 opacity: 1;
+                transform: translateY(0);
             }
+        }
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s, transform 0.6s;
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
         
         /* التجاوب مع الشاشات الصغيرة */
@@ -815,27 +476,20 @@
                 display: none;
             }
             
-            .welcome-banner h1 {
+            .landing-hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .landing-hero p {
+                font-size: 1.1rem;
+            }
+            
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+            
+            .section-title {
                 font-size: 2rem;
-            }
-            
-            .welcome-banner p {
-                font-size: 1rem;
-            }
-            
-            .section-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-            
-            .advanced-filters {
-                flex-direction: column;
-            }
-            
-            .cart-sidebar {
-                width: 100%;
-                left: -100%;
             }
             
             .scroll-to-top {
@@ -845,978 +499,450 @@
                 height: 45px;
             }
         }
-        
-        /* حالة التحميل */
-        .loading {
-            text-align: center;
-            padding: 3rem;
-            color: #666;
-        }
-        
-        .loading-spinner {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 1rem;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
     </style>
 </head>
 <body>
-    <!-- الهيدر المحسن -->
-    <header class="header" id="main-header">
+    <!-- الهيدر -->
+    <header class="header">
         <div class="container">
             <div class="logo">
-                <div class="logo-image" id="store-logo">
-                    🏪
-                </div>
-                <div class="logo-text">
-                    <h1 id="store-name">جاري التحميل...</h1>
-                    <small id="store-status">متجر إلكتروني</small>
-                </div>
+                <h1>ShopReady</h1>
             </div>
             <nav class="navigation">
                 <ul class="nav-links">
-                    <li><a href="#home" class="nav-link active">🏠 الرئيسية</a></li>
-                    <li><a href="#products" class="nav-link">🛍️ المنتجات</a></li>
-                    <li><a href="#about" class="nav-link">ℹ️ عن المتجر</a></li>
-                    <li><a href="#contact" class="nav-link">📞 اتصل بنا</a></li>
+                    <li><a href="#features">المميزات</a></li>
+                    <li><a href="#pricing">الباقات</a></li>
+                    <li><a href="#order">اطلب الآن</a></li>
+                    <li><a href="#contact">اتصل بنا</a></li>
                 </ul>
             </nav>
-            <div class="header-actions">
-                <button class="cart-btn" id="cart-button">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span class="cart-count">0</span>
-                </button>
-            </div>
         </div>
     </header>
 
-    <!-- قسم الترحيب -->
-    <section class="welcome-banner" id="home">
+    <!-- قسم البطل -->
+    <section class="landing-hero">
         <div class="container">
-            <h1 id="welcome-title">جاري تحميل المتجر...</h1>
-            <p id="welcome-message">يرجى الانتظار قليلاً</p>
-            <div class="quick-actions">
-                <a href="#products" class="action-btn"><i class="fas fa-shopping-bag"></i> تصفح المنتجات</a>
-                <a href="#contact" class="action-btn"><i class="fas fa-phone"></i> تواصل معنا</a>
-                <button class="action-btn" onclick="shareStore()"><i class="fas fa-share-alt"></i> مشاركة المتجر</button>
-            </div>
+            <h1>متجرك الإلكتروني جاهز في 5 دقائق! ⚡</h1>
+            <p>بدون تعقيد، بدون برمجة، متجر احترافي متكامل يشغلك عن كل شيء</p>
+            <button class="cta-button" onclick="scrollToOrder()">ابدأ مجاناً الآن</button>
         </div>
     </section>
 
-    <!-- قسم التصفية المحسن -->
-    <section class="filters-section" id="products">
+    <!-- المميزات -->
+    <section class="features-section" id="features">
         <div class="container">
-            <div class="section-header">
-                <h2><i class="fas fa-shopping-bag"></i> منتجاتنا</h2>
-                <div class="filter-info">
-                    <span id="products-shown">0</span> منتج متاح
-                </div>
-            </div>
+            <h2 class="section-title">لماذا ShopReady؟</h2>
+            <p class="section-subtitle">كل ما تحتاجه لبدء متجرك الإلكتروني في مكان واحد</p>
             
-            <div class="filter-buttons" id="category-filters">
-                <!-- التصنيفات تظهر هنا تلقائياً -->
-            </div>
-            
-            <div class="advanced-filters">
-                <select id="price-filter" class="filter-select">
-                    <option value="all"><i class="fas fa-money-bill-wave"></i> جميع الأسعار</option>
-                    <option value="0-50">حتى 50 جنيه</option>
-                    <option value="50-100">50 - 100 جنيه</option>
-                    <option value="100-200">100 - 200 جنيه</option>
-                    <option value="200+">أكثر من 200 جنيه</option>
-                </select>
-
-                <select id="rating-filter" class="filter-select">
-                    <option value="all"><i class="fas fa-star"></i> جميع التقييمات</option>
-                    <option value="5">5 نجوم</option>
-                    <option value="4">4 نجوم فأكثر</option>
-                    <option value="3">3 نجوم فأكثر</option>
-                </select>
-
-                <div class="search-container">
-                    <input type="text" id="search-input" placeholder="🔍 ابحث عن منتج..." class="search-box">
-                    <button onclick="clearSearch()" class="clear-search">✕</button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- قسم المنتجات المحسن -->
-    <section class="products-section">
-        <div class="container">
-            <div class="products-grid" id="products-container">
-                <div class="loading">
-                    <div class="loading-spinner"></div>
-                    <p>جاري تحميل المنتجات...</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- قسم QR Code -->
-    <section class="container">
-        <div class="qr-section">
-            <h3><i class="fas fa-qrcode"></i> شارك متجرك</h3>
-            <p>مسح QR Code لمشاركة المتجر بسهولة</p>
-            
-            <div class="qr-code-container">
-                <div id="qrcode" class="qr-code">
-                    <div class="qr-placeholder" id="qrPlaceholder">
-                        <i class="fas fa-qrcode" style="font-size: 4rem; color: #ccc; margin-bottom: 1rem;"></i>
-                        <p>سيظهر QR Code هنا</p>
+            <div class="features-grid">
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
                     </div>
+                    <h3>تشغيل فوري</h3>
+                    <p>متجرك جاهز خلال 5 دقائق فقط، ابدأ البيع فوراً بدون أي تعقيدات تقنية</p>
                 </div>
                 
-                <div class="qr-actions">
-                    <button class="btn btn-primary" onclick="generateQRCode()">
-                        <i class="fas fa-bolt"></i> إنشاء QR Code
-                    </button>
-                    <button class="btn btn-success" onclick="downloadQRCode()" id="downloadBtn" style="display: none;">
-                        <i class="fas fa-download"></i> تحميل الصورة
-                    </button>
-                    <button class="btn btn-secondary" onclick="shareQRCode()" id="shareBtn" style="display: none;">
-                        <i class="fas fa-share-alt"></i> مشاركة
-                    </button>
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <h3>توفير في التكاليف</h3>
+                    <p>اشتراك سنوي بسعر مناسب بدون رسوم خفية أو مصاريف إضافية</p>
                 </div>
                 
-                <div class="qr-info">
-                    <p><strong><i class="fas fa-link"></i> رابط المتجر:</strong></p>
-                    <div class="store-url" id="storeUrlText">
-                        جاري تحميل الرابط...
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
                     </div>
-                    <button class="btn btn-sm btn-outline" onclick="copyStoreUrl()">
-                        <i class="fas fa-copy"></i> نسخ الرابط
-                    </button>
+                    <h3>متوافق مع جميع الأجهزة</h3>
+                    <p>تصميم متجاوب يعمل على الجوال والتابلت والكمبيوتر بشكل مثالي</p>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <h3>إدارة سهلة</h3>
+                    <p>لوحة تحكم بسيطة وبديهية لإدارة المنتجات والطلبات والعملاء</p>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h3>دعم فني متكامل</h3>
+                    <p>فريق دعم فني محترف لمساعدتك في كل خطوة على مدار الساعة</p>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fab fa-whatsapp"></i>
+                    </div>
+                    <h3>ربط مع واتساب</h3>
+                    <p>استقبال الطلبات مباشرة على واتسابك وتسهيل التواصل مع العملاء</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- قسم عن المتجر -->
-    <section id="about" class="container">
-        <div class="content-section">
-            <div class="section-header">
-                <h2><i class="fas fa-info-circle"></i> عن المتجر</h2>
-            </div>
-            <div class="content-body">
-                <div id="store-description">
-                    <div class="loading">
-                        <p>جاري تحميل معلومات المتجر...</p>
-                    </div>
+    <!-- الباقات -->
+    <section class="pricing-section" id="pricing">
+        <div class="container">
+            <h2 class="section-title">باقاتنا</h2>
+            <p class="section-subtitle">اختر الباقة التي تناسب مشروعك</p>
+            
+            <div class="pricing-cards">
+                <div class="pricing-card fade-in">
+                    <h3>تجريبي</h3>
+                    <div class="price">مجاني <span>/ 7 أيام</span></div>
+                    <ul>
+                        <li>7 أيام مجانية كاملة</li>
+                        <li>متجر كامل المميزات</li>
+                        <li>دعم فني خلال الفترة</li>
+                        <li>تجربة جميع الخدمات</li>
+                        <li>حتى 10 منتجات</li>
+                    </ul>
+                    <button class="cta-button" onclick="scrollToOrder()">جرب الآن</button>
+                </div>
+                
+                <div class="pricing-card featured fade-in">
+                    <h3>الاشتراك السنوي</h3>
+                    <div class="price">1000 جنيه <span>/ سنوياً</span></div>
+                    <ul>
+                        <li>متجر احترافي متكامل</li>
+                        <li>لوحة تحكم متقدمة</li>
+                        <li>ربط مع واتساب</li>
+                        <li>دعم فني مستمر</li>
+                        <li>تحديثات دورية</li>
+                        <li>QR Code للمتجر</li>
+                        <li>عدد غير محدود من المنتجات</li>
+                    </ul>
+                    <button class="cta-button" onclick="scrollToOrder()">اشترك الآن</button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- قسم اتصل بنا -->
-    <section id="contact" class="container">
-        <div class="content-section">
-            <div class="section-header">
-                <h2><i class="fas fa-phone"></i> اتصل بنا</h2>
-            </div>
-            <div class="content-body">
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <strong><i class="fab fa-whatsapp"></i> واتساب</strong>
-                        <p id="store-phone">جاري تحميل رقم المتجر...</p>
-                        <button class="btn btn-success btn-sm" onclick="contactViaWhatsApp()">
-                            <i class="fab fa-whatsapp"></i> تواصل عبر واتساب
-                        </button>
+    <!-- نموذج الطلب -->
+    <section class="order-form" id="order">
+        <div class="container">
+            <div class="form-container fade-in">
+                <h2 style="text-align: center; margin-bottom: 2rem; color: var(--primary);">اطلب متجرك الآن</h2>
+                
+                <form id="store-order-form">
+                    <div class="form-group">
+                        <label for="store-name">اسم المتجر *</label>
+                        <input type="text" id="store-name" name="store-name" required placeholder="أدخل اسم متجرك">
                     </div>
-                    <div class="contact-item">
-                        <strong><i class="fas fa-clock"></i> ساعات العمل</strong>
-                        <p>24/7 طوال الأسبوع</p>
+                    
+                    <div class="form-group">
+                        <label for="owner-name">اسم صاحب المتجر *</label>
+                        <input type="text" id="owner-name" name="owner-name" required placeholder="أدخل اسمك الكامل">
                     </div>
-                    <div class="contact-item">
-                        <strong><i class="fas fa-truck"></i> التوصيل</strong>
-                        <p>متصال لجميع أنحاء المدينة</p>
+                    
+                    <div class="form-group">
+                        <label for="phone">رقم الواتساب *</label>
+                        <input type="tel" id="phone" name="phone" required placeholder="أدخل رقم واتسابك">
                     </div>
-                </div>
+                    
+                    <div class="form-group">
+                        <label for="business-type">نوع النشاط</label>
+                        <select id="business-type" name="business-type">
+                            <option value="restaurant">مطعم / مأكولات</option>
+                            <option value="clothing">ملابس وأزياء</option>
+                            <option value="electronics">إلكترونيات</option>
+                            <option value="services">خدمات</option>
+                            <option value="other">أخرى</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="plan-type">نوع الباقة</label>
+                        <select id="plan-type" name="plan-type">
+                            <option value="trial">تجريبي (7 أيام مجانية)</option>
+                            <option value="annual">سنوي (1000 جنيه)</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="cta-button" style="width: 100%;">إنشاء المتجر الآن</button>
+                </form>
             </div>
         </div>
     </section>
 
-    <!-- سلة التسوق المحسنة -->
-    <div class="cart-sidebar" id="cart-sidebar">
-        <div class="cart-header">
-            <h3><i class="fas fa-shopping-cart"></i> سلة التسوق</h3>
-            <button class="close-cart" onclick="closeCart()">✕</button>
+    <!-- الفوتر -->
+    <footer id="contact">
+        <div class="container">
+            <p>© 2024 ShopReady. جميع الحقوق محفوظة</p>
+            <p>اتصل بنا: +201208034393 | contact@shopready.com</p>
+            <p style="margin-top: 1rem;">
+                <a href="#" style="color: #fff; margin: 0 10px;"><i class="fab fa-whatsapp"></i></a>
+                <a href="#" style="color: #fff; margin: 0 10px;"><i class="fab fa-facebook"></i></a>
+                <a href="#" style="color: #fff; margin: 0 10px;"><i class="fab fa-instagram"></i></a>
+            </p>
         </div>
-        <div class="cart-items" id="cart-items">
-            <!-- عناصر السلة تظهر هنا -->
-        </div>
-        <div class="cart-footer">
-            <div class="cart-summary">
-                <div class="cart-total">
-                    <strong>الإجمالي: <span id="total-price">0</span> جنيه</strong>
-                </div>
-                <div class="cart-actions">
-                    <button class="btn btn-secondary" onclick="clearCart()">
-                        <i class="fas fa-trash"></i> تفريغ السلة
-                    </button>
-                    <button class="btn btn-success checkout-btn" onclick="sendOrderToWhatsApp()">
-                        <i class="fab fa-whatsapp"></i> إتمام الطلب عبر واتساب
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+    </footer>
 
     <!-- زر الصعود للأعلى -->
     <button class="scroll-to-top" id="scrollToTop">
         <i class="fas fa-chevron-up"></i>
     </button>
 
-    <!-- الفوتر المحسن -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div>
-                    <h4 id="footer-store-name">جاري التحميل...</h4>
-                    <p>متجر إلكتروني متكامل</p>
-                </div>
-                <div>
-                    <h4>روابط سريعة</h4>
-                    <ul class="footer-links">
-                        <li><a href="#home">الرئيسية</a></li>
-                        <li><a href="#products">المنتجات</a></li>
-                        <li><a href="#about">عن المتجر</a></li>
-                        <li><a href="#contact">اتصل بنا</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4>التواصل</h4>
-                    <p id="footer-phone"><i class="fas fa-phone"></i> جاري التحميل...</p>
-                    <p><i class="fas fa-clock"></i> 24/7</p>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>© 2024 <span id="copyright-name">متجر إلكتروني</span>. جميع الحقوق محفوظة</p>
-                <p style="color: #ccc; font-size: 0.8rem; margin-top: 0.5rem;">Powered by ShopReady</p>
-            </div>
-        </div>
-    </footer>
-
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <script>
-        // بيانات المتجر الحقيقية من جوجل شيت
-        let storeData = {
-            store: {},
-            categories: [],
-            products: [],
-            cart: []
-        };
-
-        // متغيرات QR Code
-        let currentQRCode = null;
-        let storeQRCodeUrl = '';
-
-        // الحصول على معرف المتجر من الرابط
-        function getStoreIdFromURL() {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('store_id');
+        // التنقل السلس
+        function scrollToOrder() {
+            document.getElementById('order').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
         }
-
-        // تهيئة الصفحة
-        document.addEventListener('DOMContentLoaded', async function() {
-            const storeId = getStoreIdFromURL();
-            
-            if (!storeId) {
-                showMessage('لم يتم العثور على متجر', 'error');
-                return;
+        
+        // زر الصعود للأعلى
+        const scrollToTopBtn = document.getElementById('scrollToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                scrollToTopBtn.classList.add('show');
+            } else {
+                scrollToTopBtn.classList.remove('show');
             }
-            
-            await initializeStore(storeId);
-            setupEventListeners();
-            setupScrollEffects();
-            autoGenerateQRCode();
         });
-
-        // تهيئة المتجر
-        async function initializeStore(storeId) {
-            try {
-                showMessage('جاري تحميل بيانات المتجر...', 'info');
-                
-                // تحميل بيانات المتجر من جوجل شيت
-                const data = await window.ShopReadyAPI.loadStoreData(storeId);
-                
-                if (!data || !data.store) {
-                    throw new Error('لم يتم العثور على بيانات المتجر');
-                }
-                
-                storeData.store = data.store;
-                storeData.categories = data.categories || [];
-                storeData.products = data.products || [];
-                
-                // تحديث واجهة المستخدم
-                updateStoreUI();
-                renderCategories();
-                renderProducts();
-                updateProductsCount();
-                
-                showMessage('تم تحميل المتجر بنجاح!', 'success');
-                
-            } catch (error) {
-                console.error('Error initializing store:', error);
-                showMessage('حدث خطأ في تحميل المتجر', 'error');
-                
-                // عرض رسالة خطأ في الواجهة
-                document.getElementById('welcome-title').textContent = 'حدث خطأ في تحميل المتجر';
-                document.getElementById('welcome-message').textContent = 'يرجى المحاولة مرة أخرى';
-            }
-        }
-
-        // تحديث واجهة المتجر
-        function updateStoreUI() {
-            const store = storeData.store;
-            
-            // تحديث العنوان
-            document.getElementById('page-title').textContent = `${store.name} - ShopReady`;
-            document.getElementById('store-name').textContent = store.name;
-            document.getElementById('welcome-title').textContent = `مرحباً بك في ${store.name}`;
-            document.getElementById('footer-store-name').textContent = store.name;
-            document.getElementById('copyright-name').textContent = store.name;
-            
-            // تحديث حالة المتجر
-            document.getElementById('store-status').textContent = store.status === 'active' ? 'متجر نشط' : 'متجر غير نشط';
-            
-            // تحديث وصف المتجر
-            const descriptionElement = document.getElementById('store-description');
-            if (store.description) {
-                descriptionElement.innerHTML = `<p>${store.description}</p>`;
-            } else {
-                descriptionElement.innerHTML = '<p>مرحباً بكم في متجرنا الإلكتروني. نحن نقدم أفضل المنتجات بأعلى جودة وأسعار مناسبة.</p>';
-            }
-            
-            // تحديث معلومات الاتصال
-            if (store.phone) {
-                document.getElementById('store-phone').textContent = store.phone;
-                document.getElementById('footer-phone').textContent = store.phone;
-            }
-            
-            // تحديث لوجو المتجر
-            updateStoreLogo(store);
-        }
-
-        // تحديث لوجو المتجر
-        function updateStoreLogo(store) {
-            const logoElement = document.getElementById('store-logo');
-            
-            if (store.logo) {
-                logoElement.innerHTML = `<img src="${store.logo}" alt="${store.name}" style="width: 100%; height: 100%; border-radius: 10px;">`;
-            } else {
-                // إنشاء لوجو افتراضي بناءً على اسم المتجر
-                const firstLetter = store.name.charAt(0).toUpperCase();
-                logoElement.textContent = firstLetter;
-                logoElement.style.background = getColorFromName(store.name);
-            }
-        }
-
-        // إنشاء لون فريد من اسم المتجر
-        function getColorFromName(name) {
-            const colors = [
-                '#2c5aa0', '#1e3a8a', '#ff6b35', '#28a745', '#6f42c1',
-                '#e83e8c', '#fd7e14', '#20c997', '#6610f2', '#d63384'
-            ];
-            
-            let hash = 0;
-            for (let i = 0; i < name.length; i++) {
-                hash = name.charCodeAt(i) + ((hash << 5) - hash);
-            }
-            
-            return colors[Math.abs(hash) % colors.length];
-        }
-
-        // إعداد مستمعي الأحداث
-        function setupEventListeners() {
-            // التنقل السلس
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const targetId = this.getAttribute('href').substring(1);
-                    const targetElement = document.getElementById(targetId);
-                    
-                    if (targetElement) {
-                        targetElement.scrollIntoView({ behavior: 'smooth' });
-                    }
-                    
-                    // تحديث الروابط النشطة
-                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                    this.classList.add('active');
-                });
-            });
-            
-            // فتح/إغلاق السلة
-            document.getElementById('cart-button').addEventListener('click', openCart);
-            
-            // التصفية
-            document.getElementById('price-filter').addEventListener('change', filterProducts);
-            document.getElementById('rating-filter').addEventListener('change', filterProducts);
-            document.getElementById('search-input').addEventListener('input', filterProducts);
-            
-            // زر الصعود للأعلى
-            document.getElementById('scrollToTop').addEventListener('click', scrollToTop);
-        }
-
-        // تأثيرات التمرير
-        function setupScrollEffects() {
-            // تأثير الهيدر عند التمرير
-            window.addEventListener('scroll', function() {
-                const header = document.getElementById('main-header');
-                if (window.scrollY > 100) {
-                    header.classList.add('scrolled');
-                } else {
-                    header.classList.remove('scrolled');
-                }
-                
-                // إظهار/إخفاء زر الصعود للأعلى
-                const scrollToTopBtn = document.getElementById('scrollToTop');
-                if (window.scrollY > 300) {
-                    scrollToTopBtn.classList.add('show');
-                } else {
-                    scrollToTopBtn.classList.remove('show');
-                }
-                
-                // أنيميشن العناصر عند التمرير
-                const fadeElements = document.querySelectorAll('.fade-in');
-                fadeElements.forEach(element => {
-                    const elementTop = element.getBoundingClientRect().top;
-                    const elementVisible = 150;
-                    
-                    if (elementTop < window.innerHeight - elementVisible) {
-                        element.classList.add('visible');
-                    }
-                });
-            });
-        }
-
-        // إنشاء التصنيفات
-        function renderCategories() {
-            const container = document.getElementById('category-filters');
-            container.innerHTML = '';
-            
-            // إضافة تصنيف "الكل"
-            const allButton = document.createElement('button');
-            allButton.className = 'category-btn active';
-            allButton.textContent = 'الكل';
-            allButton.dataset.category = 'all';
-            allButton.addEventListener('click', function() {
-                document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
-                this.classList.add('active');
-                filterProducts();
-            });
-            container.appendChild(allButton);
-            
-            // إضافة التصنيفات من البيانات
-            storeData.categories.forEach(category => {
-                if (category.id !== 'all' && category.status !== 'inactive') {
-                    const button = document.createElement('button');
-                    button.className = 'category-btn';
-                    button.textContent = category.name;
-                    button.dataset.category = category.id;
-                    button.addEventListener('click', function() {
-                        document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
-                        this.classList.add('active');
-                        filterProducts();
-                    });
-                    container.appendChild(button);
-                }
-            });
-        }
-
-        // إنشاء المنتجات
-        function renderProducts(products = storeData.products) {
-            const container = document.getElementById('products-container');
-            
-            if (products.length === 0) {
-                container.innerHTML = '<div class="no-products" style="text-align: center; padding: 3rem; color: #666; grid-column: 1 / -1;">لا توجد منتجات متاحة حالياً</div>';
-                return;
-            }
-            
-            container.innerHTML = '';
-            
-            products.forEach(product => {
-                const productCard = document.createElement('div');
-                productCard.className = 'product-card fade-in';
-                productCard.innerHTML = `
-                    <div class="product-image">
-                        <img src="${product.image || 'https://via.placeholder.com/300x200?text=صورة+المنتج'}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/300x200?text=صورة+المنتج'">
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-title">${product.name}</h3>
-                        <p class="product-description">${product.description || 'منتج عالي الجودة'}</p>
-                        <div class="product-price">${product.price} جنيه</div>
-                        <button class="add-to-cart" onclick="addToCart('${product.id}')">
-                            <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                        </button>
-                    </div>
-                `;
-                container.appendChild(productCard);
-            });
-            
-            // تشغيل أنيميشن العناصر
-            setTimeout(() => {
-                document.querySelectorAll('.fade-in').forEach(el => {
-                    const elementTop = el.getBoundingClientRect().top;
-                    const elementVisible = 150;
-                    
-                    if (elementTop < window.innerHeight - elementVisible) {
-                        el.classList.add('visible');
-                    }
-                });
-            }, 100);
-        }
-
-        // تصفية المنتجات
-        function filterProducts() {
-            const searchTerm = document.getElementById('search-input').value.toLowerCase();
-            const priceFilter = document.getElementById('price-filter').value;
-            const activeCategory = document.querySelector('.category-btn.active').dataset.category;
-            
-            let filteredProducts = storeData.products.filter(product => {
-                // البحث بالنص
-                const matchesSearch = product.name.toLowerCase().includes(searchTerm) || 
-                                     (product.description && product.description.toLowerCase().includes(searchTerm));
-                
-                // التصنيف
-                const matchesCategory = activeCategory === 'all' || product.category === activeCategory;
-                
-                // السعر
-                let matchesPrice = true;
-                if (priceFilter !== 'all') {
-                    if (priceFilter === '0-50') {
-                        matchesPrice = product.price <= 50;
-                    } else if (priceFilter === '50-100') {
-                        matchesPrice = product.price > 50 && product.price <= 100;
-                    } else if (priceFilter === '100-200') {
-                        matchesPrice = product.price > 100 && product.price <= 200;
-                    } else if (priceFilter === '200+') {
-                        matchesPrice = product.price > 200;
-                    }
-                }
-                
-                return matchesSearch && matchesCategory && matchesPrice;
-            });
-            
-            renderProducts(filteredProducts);
-            document.getElementById('products-shown').textContent = filteredProducts.length;
-        }
-
-        // تحديث عدد المنتجات
-        function updateProductsCount() {
-            document.getElementById('products-shown').textContent = storeData.products.length;
-        }
-
-        // إدارة السلة
-        function addToCart(productId) {
-            const product = storeData.products.find(p => p.id === productId);
-            if (!product) return;
-            
-            const existingItem = storeData.cart.find(item => item.id === productId);
-            
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                storeData.cart.push({
-                    ...product,
-                    quantity: 1
-                });
-            }
-            
-            updateCartCount();
-            updateCartUI();
-            showMessage(`تم إضافة "${product.name}" إلى السلة`, 'success');
-            
-            // فتح السلة تلقائياً
-            if (!document.getElementById('cart-sidebar').classList.contains('open')) {
-                openCart();
-            }
-        }
-
-        function removeFromCart(productId) {
-            storeData.cart = storeData.cart.filter(item => item.id !== productId);
-            updateCartCount();
-            updateCartUI();
-            showMessage('تم إزالة المنتج من السلة', 'warning');
-        }
-
-        function updateQuantity(productId, change) {
-            const item = storeData.cart.find(item => item.id === productId);
-            if (!item) return;
-            
-            item.quantity += change;
-            
-            if (item.quantity <= 0) {
-                removeFromCart(productId);
-            } else {
-                updateCartCount();
-                updateCartUI();
-            }
-        }
-
-        function updateCartCount() {
-            const count = storeData.cart.reduce((total, item) => total + item.quantity, 0);
-            document.querySelector('.cart-count').textContent = count;
-        }
-
-        function updateCartUI() {
-            const container = document.getElementById('cart-items');
-            const totalPriceElement = document.getElementById('total-price');
-            
-            if (storeData.cart.length === 0) {
-                container.innerHTML = '<div style="text-align: center; padding: 2rem; color: #666;">السلة فارغة</div>';
-                totalPriceElement.textContent = '0';
-                return;
-            }
-            
-            let totalPrice = 0;
-            container.innerHTML = '';
-            
-            storeData.cart.forEach(item => {
-                totalPrice += item.price * item.quantity;
-                
-                const cartItem = document.createElement('div');
-                cartItem.className = 'cart-item';
-                cartItem.innerHTML = `
-                    <div class="cart-item-image">
-                        <img src="${item.image || 'https://via.placeholder.com/60x60?text=صورة'}" alt="${item.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
-                    </div>
-                    <div class="cart-item-details">
-                        <div class="cart-item-title">${item.name}</div>
-                        <div class="cart-item-price">${item.price} جنيه</div>
-                        <div class="cart-item-actions">
-                            <button class="quantity-btn" onclick="updateQuantity('${item.id}', -1)">-</button>
-                            <span>${item.quantity}</span>
-                            <button class="quantity-btn" onclick="updateQuantity('${item.id}', 1)">+</button>
-                            <button class="quantity-btn" onclick="removeFromCart('${item.id}')" style="margin-left: 1rem; color: #dc3545;">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(cartItem);
-            });
-            
-            totalPriceElement.textContent = totalPrice;
-        }
-
-        function openCart() {
-            document.getElementById('cart-sidebar').classList.add('open');
-        }
-
-        function closeCart() {
-            document.getElementById('cart-sidebar').classList.remove('open');
-        }
-
-        function clearCart() {
-            if (storeData.cart.length === 0) {
-                showMessage('السلة فارغة بالفعل', 'info');
-                return;
-            }
-            
-            if (confirm('هل تريد تفريغ السلة بالكامل؟')) {
-                storeData.cart = [];
-                updateCartCount();
-                updateCartUI();
-                showMessage('تم تفريغ السلة', 'warning');
-            }
-        }
-
-        // إرسال الطلب عبر واتساب
-        function sendOrderToWhatsApp() {
-            if (storeData.cart.length === 0) {
-                showMessage('السلة فارغة، أضف منتجات أولاً', 'warning');
-                return;
-            }
-            
-            const store = storeData.store;
-            let message = `🛒 طلب جديد من ${store.name}\n\n`;
-            let total = 0;
-            
-            storeData.cart.forEach(item => {
-                message += `📦 ${item.name} - ${item.quantity} × ${item.price} = ${item.quantity * item.price} جنيه\n`;
-                total += item.quantity * item.price;
-            });
-            
-            message += `\n💰 الإجمالي: ${total} جنيه\n\n`;
-            message += `📍 معلومات العميل:\n`;
-            message += `الاسم: __________\n`;
-            message += `العنوان: __________\n`;
-            message += `الهاتف: __________\n\n`;
-            message += `شكراً لطلبك من ${store.name}!`;
-            
-            const encodedMessage = encodeURIComponent(message);
-            const phone = store.phone || '01234567890';
-            window.open(`https://wa.me/${phone}?text=${encodedMessage}`, '_blank');
-        }
-
-        // دوال QR Code
-        function generateQRCode() {
-            const storeUrl = window.location.href;
-            const storeName = storeData.store.name;
-            
-            // تحديث نص الرابط
-            document.getElementById('storeUrlText').textContent = storeUrl;
-            
-            const qrContainer = document.getElementById('qrcode');
-            const placeholder = document.getElementById('qrPlaceholder');
-            
-            // إخفاء placeholder
-            if (placeholder) {
-                placeholder.style.display = 'none';
-            }
-            
-            // مسح QR Code السابق إذا موجود
-            qrContainer.innerHTML = '';
-            
-            try {
-                // إنشاء QR Code
-                QRCode.toCanvas(storeUrl, {
-                    width: 200,
-                    height: 200,
-                    margin: 1,
-                    color: {
-                        dark: '#2c5aa0',
-                        light: '#ffffff'
-                    }
-                }, function(err, canvas) {
-                    if (err) {
-                        console.error('Error generating QR code:', err);
-                        showMessage('حدث خطأ في إنشاء QR Code', 'error');
-                        if (placeholder) {
-                            placeholder.style.display = 'block';
-                        }
-                        return;
-                    }
-                    
-                    if (canvas) {
-                        // إضافة الـ canvas للعرض
-                        qrContainer.appendChild(canvas);
-                        
-                        // حفظ رابط الصورة للتحميل
-                        storeQRCodeUrl = canvas.toDataURL('image/png');
-                        
-                        // إظهار أزرار التحكم
-                        document.getElementById('downloadBtn').style.display = 'inline-block';
-                        document.getElementById('shareBtn').style.display = 'inline-block';
-                        
-                        showMessage('تم إنشاء QR Code بنجاح!', 'success');
-                        
-                        // حفظ في localStorage للجلسات القادمة
-                        saveQRCodeToStorage(storeUrl, storeQRCodeUrl);
-                        
-                    } else {
-                        throw new Error('Failed to generate QR code');
-                    }
-                });
-                
-            } catch (error) {
-                console.error('QR Code generation failed:', error);
-                showMessage('تعذر إنشاء QR Code', 'error');
-                if (placeholder) {
-                    placeholder.style.display = 'block';
-                }
-            }
-        }
-
-        function downloadQRCode() {
-            if (!storeQRCodeUrl) {
-                showMessage('قم بإنشاء QR Code أولاً', 'warning');
-                return;
-            }
-            
-            const storeName = storeData.store.name || 'متجر';
-            const filename = `qrcode-${storeName.replace(/\s+/g, '-')}.png`;
-            
-            const link = document.createElement('a');
-            link.href = storeQRCodeUrl;
-            link.download = filename;
-            link.click();
-            
-            showMessage('تم تحميل QR Code بنجاح!', 'success');
-        }
-
-        async function shareQRCode() {
-            if (!storeQRCodeUrl) {
-                showMessage('قم بإنشاء QR Code أولاً', 'warning');
-                return;
-            }
-            
-            const storeUrl = window.location.href;
-            const storeName = storeData.store.name || "متجر إلكتروني";
-            
-            try {
-                // تحويل data URL إلى blob
-                const response = await fetch(storeQRCodeUrl);
-                const blob = await response.blob();
-                const file = new File([blob], `qrcode-${storeName}.png`, { type: 'image/png' });
-                
-                if (navigator.share && navigator.canShare({ files: [file] })) {
-                    await navigator.share({
-                        title: `QR Code - ${storeName}`,
-                        text: `شارك متجري: ${storeName}`,
-                        url: storeUrl,
-                        files: [file]
-                    });
-                    showMessage('تم مشاركة QR Code بنجاح!', 'success');
-                } else {
-                    // إذا لم يدعم المشاركة، نستخدم نسخ الرابط
-                    copyStoreUrl();
-                }
-            } catch (error) {
-                console.error('Share failed:', error);
-                // إذا فشلت المشاركة، نستخدم نسخ الرابط
-                copyStoreUrl();
-            }
-        }
-
-        function copyStoreUrl() {
-            const storeUrl = window.location.href;
-            
-            navigator.clipboard.writeText(storeUrl).then(() => {
-                showMessage('تم نسخ رابط المتجر!', 'success');
-            }).catch(() => {
-                // طريقة بديلة للهواتف القديمة
-                const textArea = document.createElement('textarea');
-                textArea.value = storeUrl;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-                showMessage('تم نسخ رابط المتجر!', 'success');
-            });
-        }
-
-        function saveQRCodeToStorage(storeUrl, qrCodeUrl) {
-            try {
-                const qrData = {
-                    storeUrl: storeUrl,
-                    qrCodeUrl: qrCodeUrl,
-                    timestamp: Date.now(),
-                    storeName: storeData.store.name
-                };
-                localStorage.setItem('storeQRCode', JSON.stringify(qrData));
-            } catch (error) {
-                console.error('Failed to save QR code to storage:', error);
-            }
-        }
-
-        function loadQRCodeFromStorage() {
-            try {
-                const savedQR = localStorage.getItem('storeQRCode');
-                if (savedQR) {
-                    const qrData = JSON.parse(savedQR);
-                    const currentUrl = window.location.href;
-                    
-                    // إذا كان الرابط نفسه، نعرض QR Code المحفوظ
-                    if (qrData.storeUrl === currentUrl) {
-                        storeQRCodeUrl = qrData.qrCodeUrl;
-                        
-                        const qrContainer = document.getElementById('qrcode');
-                        const placeholder = document.getElementById('qrPlaceholder');
-                        
-                        if (placeholder) {
-                            placeholder.style.display = 'none';
-                        }
-                        
-                        // إنشاء صورة من البيانات المحفوظة
-                        const img = new Image();
-                        img.src = qrData.qrCodeUrl;
-                        img.alt = `QR Code - ${qrData.storeName}`;
-                        img.style.width = '200px';
-                        img.style.height = '200px';
-                        
-                        qrContainer.appendChild(img);
-                        
-                        // إظهار أزرار التحكم
-                        document.getElementById('downloadBtn').style.display = 'inline-block';
-                        document.getElementById('shareBtn').style.display = 'inline-block';
-                    }
-                }
-            } catch (error) {
-                console.error('Failed to load QR code from storage:', error);
-            }
-        }
-
-        function autoGenerateQRCode() {
-            const storeUrl = window.location.href;
-            document.getElementById('storeUrlText').textContent = storeUrl;
-            
-            // محاولة تحميل QR Code محفوظ
-            loadQRCodeFromStorage();
-            
-            // إذا لم يكن هناك QR Code محفوظ، ننشئ واحداً تلقائياً بعد ثانيتين
-            if (!storeQRCodeUrl) {
-                setTimeout(() => {
-                    generateQRCode();
-                }, 2000);
-            }
-        }
-
-        // دوال مساعدة
-        function shareStore() {
-            const storeUrl = window.location.href;
-            const storeName = storeData.store.name || "متجر إلكتروني";
-            
-            if (navigator.share) {
-                navigator.share({
-                    title: storeName,
-                    text: `تفضل بزيارة متجري: ${storeName}`,
-                    url: storeUrl
-                });
-            } else {
-                copyStoreUrl();
-            }
-        }
         
-        function contactViaWhatsApp() {
-            const store = storeData.store;
-            const message = `مرحباً، أريد الاستفسار عن المنتجات في ${store.name}`;
-            const phone = store.phone || '01234567890';
-            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
-        }
-        
-        function clearSearch() {
-            document.getElementById('search-input').value = '';
-            filterProducts();
-        }
-        
-        function scrollToTop() {
+        scrollToTopBtn.addEventListener('click', () => {
             window.scrollTo({
                 top: 0,
                 behavior: 'smooth'
             });
-        }
-
-        function showMessage(message, type = 'info') {
-            // إزالة أي رسالة سابقة
-            const existingAlert = document.querySelector('.alert');
-            if (existingAlert) {
-                existingAlert.remove();
-            }
-            
-            // إنشاء رسالة جديدة
-            const alert = document.createElement('div');
-            alert.className = `alert alert-${type}`;
-            alert.textContent = message;
-            
-            document.body.appendChild(alert);
-            
-            // إزالة الرسالة تلقائياً بعد 3 ثوان
-            setTimeout(() => {
-                if (alert.parentNode) {
-                    alert.parentNode.removeChild(alert);
+        });
+        
+        // أنيميشن العناصر عند التمرير
+        const fadeElements = document.querySelectorAll('.fade-in');
+        
+        const fadeInOnScroll = () => {
+            fadeElements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('visible');
                 }
-            }, 3000);
+            });
+        };
+        
+        window.addEventListener('scroll', fadeInOnScroll);
+        // تشغيل مرة أولية عند تحميل الصفحة
+        fadeInOnScroll();
+        
+        // إرسال النموذج
+        document.getElementById('store-order-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                storeName: document.getElementById('store-name').value,
+                ownerName: document.getElementById('owner-name').value,
+                phone: document.getElementById('phone').value,
+                businessType: document.getElementById('business-type').value,
+                planType: document.getElementById('plan-type').value
+            };
+            
+            // تعطيل الزر أثناء المعالجة
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="loading"></span> جاري إنشاء متجرك...';
+            
+            try {
+                // محاكاة عملية إنشاء المتجر
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // إنشاء معرف فريد للمتجر
+                const storeId = generateStoreId();
+                const storeUrl = `${window.location.origin}/store.html?id=${storeId}`;
+                
+                // إرسال رسالة واتساب
+                const message = `🛍️ طلب متجر جديد%0A%0A`
+                    + `🏪 اسم المتجر: ${formData.storeName}%0A`
+                    + `👤 صاحب المتجر: ${formData.ownerName}%0A`
+                    + `📞 رقم الواتساب: ${formData.phone}%0A`
+                    + `📊 نوع النشاط: ${formData.businessType}%0A`
+                    + `💰 الباقة: ${formData.planType === 'annual' ? 'سنوي' : 'تجريبي'}%0A`
+                    + `🆔 كود المتجر: ${storeId}%0A`
+                    + `⏰ الوقت: ${new Date().toLocaleString('ar-EG')}`;
+                
+                window.open(`https://wa.me/201208034393?text=${message}`, '_blank');
+                
+                // عرض رسالة النجاح
+                showStoreReady(storeId, formData, storeUrl);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert('حدث خطأ في إنشاء المتجر، يرجى المحاولة مرة أخرى');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'إنشاء المتجر الآن';
+            }
+        });
+        
+        // دالة إنشاء معرف فريد للمتجر
+        function generateStoreId() {
+            const timestamp = Date.now().toString(36);
+            const random = Math.random().toString(36).substr(2, 5);
+            return `ST${timestamp}${random}`.toUpperCase();
+        }
+        
+        // دالة عرض صفحة النجاح
+        function showStoreReady(storeId, formData, storeUrl) {
+            // إنشاء QR Code
+            const qrCodeHTML = generateQRCode(storeUrl);
+            
+            const successHTML = `
+                <div style="text-align: center; padding: 2rem 1rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+                    <div style="background: white; color: #333; padding: 3rem 2rem; border-radius: 15px; margin: 2rem auto; max-width: 700px; width: 100%; box-shadow: 0 20px 40px rgba(0,0,0,0.1);">
+                        <div style="font-size: 5rem; margin-bottom: 1rem;">🎉</div>
+                        <h2 style="color: var(--primary); margin-bottom: 1rem;">مبروك! متجرك جاهز</h2>
+                        
+                        <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 10px; margin: 2rem 0; text-align: right;">
+                            <h4 style="color: var(--primary); margin-bottom: 1rem;">🔗 رابط متجرك:</h4>
+                            <div style="background: white; padding: 1rem; border-radius: 8px; border: 2px dashed var(--primary); margin: 1rem 0;">
+                                <a href="${storeUrl}" target="_blank" style="font-size: 1.2rem; color: var(--primary); text-decoration: none; word-break: break-all;">
+                                    ${storeUrl}
+                                </a>
+                            </div>
+                            <div class="qr-actions">
+                                <button onclick="copyLink('${storeUrl}')" class="qr-button">
+                                    📋 نسخ الرابط
+                                </button>
+                                <button onclick="openStore('${storeUrl}')" class="qr-button success">
+                                    🚀 فتح المتجر
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- قسم QR Code -->
+                        <div class="qr-section">
+                            <h4 style="color: var(--primary); margin-bottom: 1rem;">📱 QR Code للمتجر</h4>
+                            <p style="margin-bottom: 1rem;">يمكنك مسح الكود لمشاركة المتجر بسهولة</p>
+                            <div id="qr-code-container" class="qr-code-container">
+                                ${qrCodeHTML}
+                            </div>
+                            <div class="qr-actions">
+                                <button onclick="downloadQRCode('${storeUrl}', '${formData.storeName}')" class="qr-button">
+                                    📥 تحميل QR Code
+                                </button>
+                                <button onclick="shareStore('${storeUrl}', '${formData.storeName}')" class="qr-button secondary">
+                                    📤 مشاركة المتجر
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 2rem 0;">
+                            <div style="background: #e3f2fd; padding: 1rem; border-radius: 8px;">
+                                <div style="font-size: 2rem;">🏪</div>
+                                <strong>${formData.storeName}</strong>
+                            </div>
+                            <div style="background: #e8f5e8; padding: 1rem; border-radius: 8px;">
+                                <div style="font-size: 2rem;">👤</div>
+                                <strong>${formData.ownerName}</strong>
+                            </div>
+                            <div style="background: #fff3cd; padding: 1rem; border-radius: 8px;">
+                                <div style="font-size: 2rem;">💰</div>
+                                <strong>${formData.planType === 'annual' ? 'سنوي' : 'تجريبي'}</strong>
+                            </div>
+                        </div>
+                        
+                        <div style="background: #fff3cd; padding: 1.5rem; border-radius: 10px; margin: 2rem 0; text-align: right;">
+                            <h4 style="color: #856404; margin-bottom: 1rem;">📝 الخطوات التالية:</h4>
+                            <ol style="text-align: right; padding-right: 1.5rem;">
+                                <li style="margin-bottom: 0.5rem;">اضغط على "فتح المتجر"</li>
+                                <li style="margin-bottom: 0.5rem;">انقر على "لوحة التحكم"</li>
+                                <li style="margin-bottom: 0.5rem;">أضف منتجاتك وأقسامك</li>
+                                <li style="margin-bottom: 0.5rem;">شارك الرابط مع عملائك</li>
+                            </ol>
+                        </div>
+                        
+                        <p style="color: #666; margin-top: 2rem;">
+                            تم إرسال تفاصيل المتجر إلى واتسابك<br>
+                            للدعم الفني: +201208034393
+                        </p>
+                    </div>
+                </div>
+            `;
+            
+            document.querySelector('.order-form').innerHTML = successHTML;
+            
+            // إنشاء QR Code بعد تحميل الصفحة
+            setTimeout(() => {
+                const qrContainer = document.getElementById('qr-code-container');
+                if (qrContainer) {
+                    QRCode.toCanvas(storeUrl, { 
+                        width: 200, 
+                        height: 200,
+                        margin: 1,
+                        color: {
+                            dark: '#2c5aa0',
+                            light: '#ffffff'
+                        }
+                    }, function(err, canvas) {
+                        if (err) {
+                            console.error('Error generating QR code:', err);
+                            qrContainer.innerHTML = '<p>خطأ في إنشاء QR Code</p>';
+                            return;
+                        }
+                        
+                        qrContainer.innerHTML = '';
+                        qrContainer.appendChild(canvas);
+                    });
+                }
+            }, 100);
+        }
+        
+        // دالة لتحميل QR Code
+        function downloadQRCode(storeUrl, storeName) {
+            QRCode.toDataURL(storeUrl, { 
+                width: 400, 
+                height: 400,
+                margin: 2,
+                color: {
+                    dark: '#2c5aa0',
+                    light: '#ffffff'
+                }
+            }, function(err, url) {
+                if (err) {
+                    console.error('Error generating QR code for download:', err);
+                    alert('حدث خطأ في إنشاء QR Code للتحميل');
+                    return;
+                }
+                
+                const link = document.createElement('a');
+                link.download = `QR-Code-${storeName.replace(/\s+/g, '-')}.png`;
+                link.href = url;
+                link.click();
+            });
+        }
+        
+        // دالة لمشاركة المتجر
+        function shareStore(storeUrl, storeName) {
+            const shareText = `🛍️ متجر ${storeName}%0A%0A`
+                + `🔗 ${storeUrl}%0A%0A`
+                + `تسوق الآن من ${storeName} واستمتع بأفضل العروض!`;
+            
+            window.open(`https://wa.me/?text=${shareText}`, '_blank');
+        }
+        
+        // دالة لنسخ الرابط
+        function copyLink(url) {
+            navigator.clipboard.writeText(url).then(() => {
+                alert('تم نسخ الرابط!');
+            });
+        }
+        
+        // دالة لفتح المتجر
+        function openStore(url) {
+            window.open(url, '_blank');
+        }
+        
+        // دالة مساعدة لإنشاء QR Code (مؤقت)
+        function generateQRCode(storeUrl) {
+            return '<div style="padding: 1rem;"><div class="loading"></div><p>جاري إنشاء QR Code...</p></div>';
         }
     </script>
 </body>
