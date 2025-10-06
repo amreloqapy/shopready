@@ -1,0 +1,12 @@
+{
+  "name": "shopready",
+  "version": "1.0.0",
+  "description": "نظام متاجر إلكترونية متكامل - ShopReady",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 -m http.server 8000"
+  },
+  "keywords": ["ecommerce", "store", "arabic", "shop"],
+  "author": "ShopReady Team",
+  "license": "MIT"
+}
